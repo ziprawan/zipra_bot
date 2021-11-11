@@ -38,7 +38,8 @@ def kicking_handler(msg: Message, user):
     except:
         return msg.reply("Wah wah wah, dia ga ada disini kok minta di kick :v", True)
     
-    msg.chat.kick_member(p.user.id)
+    kicked = msg.chat.kick_member(p.user.id)
+    kicked.delete()
     msg.chat.unban_member(p.user.id)
     return msg.reply(f'<a href=\'tg://user?id={p.user.id}\'>{p.user.first_name}</a> berhasil aku kick!', True)
 
