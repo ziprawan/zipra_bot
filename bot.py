@@ -78,6 +78,8 @@ def message_handlers(bot, msg: pyrogram.types.Message):
         if command in user_command:
             return user_command[command].main(msg, bot, command, args)
         
+        if msg.chat.type == 'private':
+            return None
         ca = check_admin.main(msg)
         if command in admin_command:
             if ca == 'administrator' or ca == 'creator':
