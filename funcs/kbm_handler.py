@@ -4,6 +4,8 @@ from utils.check_admin import main as checkAdmin
 
 def muting_handler(msg: Message, opsi, user):
     # Cek sudah termute atau belum
+    if user.id == msg._client.get_me().id:
+        return msg.reply("Saya gabisa mute saya sendiri")
     try:
         perm: ChatMember = msg.chat.get_member(user.id)
     except UserNotParticipant:
