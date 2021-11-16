@@ -1,4 +1,4 @@
-from pyrogram.errors import ChatAdminRequired, PeerIdInvalid
+from pyrogram.errors import ChatAdminRequired, PeerIdInvalid, UserAdminInvalid, UsernameNotOccupied, UserNotParticipant
 from pyrogram.types import Message, ChatPermissions, ChatMember, InlineKeyboardMarkup, InlineKeyboardButton
 from utils.check_admin import main as checkAdmin
 
@@ -6,20 +6,24 @@ def muting_handler(msg: Message, opsi, user):
     # Cek sudah termute atau belum
     try:
         perm: ChatMember = msg.chat.get_member(user.id)
+    except UserNotParticipant:
+        return msg.reply("User ini tidak ada di grup ini!", True)
     except:
         perm: ChatMember = msg.chat.get_member(user.username)
-    if perm.can_send_messages == None:
+    if msg.chat.get_member("me").status != 'administrator':
         raise ChatAdminRequired
     else:
-        is_muted = not perm.can_send_messages
-
+        is_muted = perm.can_send_messages
     # Handling mute and unmute
     if opsi == 'mute':
         if is_muted == True:
             return msg.reply(f'Maaf, tapi {user.first_name} sudah termute', True)
         else:
             permission = ChatPermissions(can_send_messages=False)
-            msg.chat.restrict_member(user.id, permission)
+            try:
+                msg.chat.restrict_member(user.id, permission)
+            except UserAdminInvalid:
+                return msg.reply("Admin tidak bisa saya mute!", True)
             return msg.reply(f"<a href='tg://user?id={user.id}'>{user.first_name}</a> berhasil ku mute!", True)
     elif opsi == 'unmute':
         if is_muted == False:
@@ -85,12 +89,18 @@ def mute(msg: Message, bot):
     elif msg.entities != None:
         for i in msg.entities:
             if i.type == 'mention':
-                user = bot.get_users(msg.text[i.offset:i.offset + i.length])
+                try:
+                    user = bot.get_users(msg.text[i.offset:i.offset + i.length])
+                except UsernameNotOccupied:
+                    return msg.reply("Username tidak ditemukan!", True)
                 muting_handler(msg, 'mute', user)
+                break
             elif i.type == 'text_mention':
                 user = i.user
                 muting_handler(msg, 'mute', user)
-            break
+                break
+    else:
+        return msg.reply("Reply atau mention ke user biar aku mute!", True)
 
 def main(msg: Message, bot, command, args):
     if command == 'mute':

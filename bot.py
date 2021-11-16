@@ -98,8 +98,8 @@ def message_handlers(bot, msg: pyrogram.types.Message):
             pass
     except pyrogram.errors.FloodWait as e:
         time.sleep(e.x)
-    except pyrogram.errors.ChatAdminRequired:
-        msg.reply("Aku perlu menjadi admin untuk melakukan itu :)", True)
+    except pyrogram.errors.ChatAdminRequired as e:
+        msg.reply(e, True)
     except UnicodeDecodeError:
         pass
     except Exception as e:
