@@ -3,9 +3,12 @@ from pyrogram.types import Message, ChatPermissions, ChatMember, InlineKeyboardM
 from utils.check_admin import main as checkAdmin
 
 def muting_handler(msg: Message, opsi, user):
-    # Cek sudah termute atau belum
+    # Checking if user is my bot self
+
     if user.id == msg._client.get_me().id:
         return msg.reply("Saya gabisa mute saya sendiri")
+
+    # Cek sudah termute atau belum
     try:
         perm: ChatMember = msg.chat.get_member(user.id)
     except UserNotParticipant:
@@ -83,11 +86,7 @@ def mute(msg: Message, bot):
         if msg.reply_to_message.from_user == None:
             return msg.reply("Uhh, saya gabisa mute anonim atau channel :v", True)
         else:
-            ca = checkAdmin(msg.reply_to_message)
-            if ca != False:
-                return msg.reply("Saya gabisa mute admin")
-            else:
-                return muting_handler(msg, 'mute', msg.reply_to_message.from_user)
+            return muting_handler(msg, 'mute', msg.reply_to_message.from_user)
     elif msg.entities != None:
         for i in msg.entities:
             if i.type == 'mention':
