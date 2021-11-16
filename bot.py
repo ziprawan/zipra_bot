@@ -99,7 +99,9 @@ def message_handlers(bot, msg: pyrogram.types.Message):
     except pyrogram.errors.FloodWait as e:
         time.sleep(e.x)
     except pyrogram.errors.ChatAdminRequired as e:
-        msg.reply(e, True)
+        return msg.reply("Aku perlu menjadi admin untuk melakukan itu :)", True)
+    except pyrogram.errors.ChatWriteForbidden:
+        pass
     except UnicodeDecodeError:
         pass
     except Exception as e:
