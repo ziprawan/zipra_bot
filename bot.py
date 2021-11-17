@@ -37,26 +37,26 @@ callbacks = {
 
 # Callback handlers
 @bot.on_callback_query()
-def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
+async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
     try:
         # print(f'{msg.from_user.username} mengklik tombol di {msg.message.chat.title}, id message: {msg.message.message_id}')
-        parser = commands.parser(me.username, msg.data)
+        parser = commands.Parser(me.username, msg.data)
         # print(msg.data)
-        command = parser.get_command()
-        args = parser.get_options(command)
+        command = await parser.get_command()
+        args = await parser.get_options(command)
         if command in callbacks:
-            callbacks[command].main(msg, bot, command, args)
+            return await callbacks[command].main(msg, command, args)
     except Exception as e:
-        bot.send_message(owner, str(e))
+        return await bot.send_message(owner, str(e))
 
 # Service message handlers
 @bot.on_message(pyrogram.filters.service)
-def service_filter(_, msg):
-    return services.main(msg)
+async def service_filter(_, msg):
+    return await services.main(msg)
 
 # Message handler including edited message
 @bot.on_message()
-def message_handlers(bot, msg: pyrogram.types.Message):
+async def message_handlers(bot, msg: pyrogram.types.Message):
     try:
         # Teks pesan
         if msg.text != None:
@@ -71,42 +71,42 @@ def message_handlers(bot, msg: pyrogram.types.Message):
             userid = msg.from_user.id
         else:
             userid = None
-        parser = commands.parser(me.username, text)
-        command = parser.get_command()
-        args = parser.get_options(command)
+        parser = commands.Parser(me.username, text)
+        command = await parser.get_command()
+        args = await parser.get_options(command)
         if command == None:
             return
         if command in user_command:
-            return user_command[command].main(msg, bot, command, args)
+            return await user_command[command].main(msg, command, args)
         
         if msg.chat.type == 'private':
             return None
-        ca = check_admin.main(msg)
+        ca = await check_admin.main(msg)
         if command in admin_command:
             if ca == 'administrator' or ca == 'creator':
-                return admin_command[command].main(msg, bot, command, args)
+                return await admin_command[command].main(msg, command, args)
             else:
-                return msg.reply("Kamu harus menjadi admin atau creator grup ini!")
+                return await msg.reply("Kamu harus menjadi admin atau creator grup ini!")
         elif command in creator_command:
             if ca == 'creator':
-                return creator_command[command].main(msg, bot, command, args)
+                return await creator_command[command].main(msg, command, args)
             else:
-                return msg.reply("Kamu harus menjadi creator grup ini!")
+                return await msg.reply("Kamu harus menjadi creator grup ini!")
         elif command in owner_command:
             if userid == owner:
-                return owner_command[command].main(msg, bot, command, args)
+                return await owner_command[command].main(msg, command, args)
         else:
             pass
     except pyrogram.errors.FloodWait as e:
         time.sleep(e.x)
     except pyrogram.errors.ChatAdminRequired as e:
-        return msg.reply("Aku perlu menjadi admin untuk melakukan itu :)", True)
+        return await msg.reply("Aku perlu menjadi admin untuk melakukan itu :)", True)
     except pyrogram.errors.ChatWriteForbidden:
         pass
     except UnicodeDecodeError:
         pass
     except Exception as e:
-        return bot.send_message(owner, str(e))
+        return await bot.send_message(owner, str(e))
     
 
 pyrogram.idle()

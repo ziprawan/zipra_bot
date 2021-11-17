@@ -6,3 +6,4 @@ workspace.code-workspace
 config.ini
 *.session*
 test
+*.db

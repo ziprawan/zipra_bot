@@ -1,59 +1,9 @@
-class parser:
+class Parser:
     def __init__(self, username, text):
         self.uname = username
         self.text = text
         self.prefix = ['/', '!', '$']
-    def check_command(self, tujuan, with_option=False):
-        try:
-            if self.text != None:
-                pesan = self.text
-                first = pesan[0]
-                if first in self.prefix:
-                    # Split dengan spasi
-                    split_by_space = pesan.split(" ")
-                    split_by_tag = split_by_space[0].split('@')
-                    command = split_by_tag[0].replace(first, '', 1)
-                    args = pesan.replace(split_by_space[0], '')
-                    try:
-                        if split_by_tag[1] != None and split_by_tag[1] == self.uname:
-                            to_my_bot = True
-                        else:
-                            to_my_bot = False
-                    except:
-                        to_my_bot = True
-                    if to_my_bot == True:
-                        if type(tujuan) == list:
-                            for i in tujuan:
-                                if command == i or command == f'{i}@{self.uname}':
-                                    if with_option:
-                                        return True
-                                    else:
-                                        if args == '':
-                                            return True
-                            return False
-                        elif type(tujuan) == str:
-                            if command == tujuan or command == f'{tujuan}@{self.uname}':
-                                if with_option:
-                                    return True
-                                else:
-                                    if args == '':
-                                        return True
-                                    else:
-                                        return False
-                            else:
-                                return False
-                        else: 
-                            return False
-                    else:
-                        return False
-                else:
-                    return False
-            else:
-                return False
-        except Exception as e:
-            print(str(e))
-            return False
-    def get_options(self, tujuan):
+    async def get_options(self, tujuan):
         pesan = self.text
         if pesan == None:
             return None
@@ -84,7 +34,7 @@ class parser:
                     else:
                         return None
     
-    def get_command(self):
+    async def get_command(self):
         teks = self.text # Misalkan /json@zipra_bot tes
         if teks == None:
             return None
@@ -102,6 +52,6 @@ class parser:
 
 # Just for testing purposes
 if __name__ == '__main__':
-    parse = parser('zipra_bot', '/json@zipra_bot /json@ziprabot lah kok wkwkwk')
+    parse = Parser('zipra_bot', '/json@zipra_bot /json@ziprabot lah kok wkwkwk')
     print(parse.extract_command('json'))
     print(parse.get_command())

@@ -5,7 +5,7 @@ db = sqlite3.connect("utils/data.db", check_same_thread=False)
 cur = db.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS service(id int, option text(5))")
 
-def get_data(group):
+async def get_data(group):
     command = "SELECT * FROM service where id=?"
     cur.execute(command, (group,))
     fetched = cur.fetchall()
@@ -20,7 +20,7 @@ def get_data(group):
     else:
         raise ValueError("Invalid Result!")
 
-def insert_data(group, option):
+async def insert_data(group, option):
     if option == True:
         op = "true"
     elif option == False:

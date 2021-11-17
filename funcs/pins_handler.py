@@ -1,57 +1,56 @@
-from pyrogram.types import Message, ChatMember
-from pyrogram import Client
+from pyrogram.types import Message
 
-def unpin_all(bot: Client, msg: Message) -> bool:
-    result = bot.unpin_all_chat_messages(msg.chat.id)
-    msg.reply("Semua pesan yg di pin berhasil di unpin!")
+async def unpin_all(msg: Message) -> bool:
+    result = await msg._client.unpin_all_chat_messages(msg.chat.id)
+    await msg.reply("Semua pesan yg di pin berhasil di unpin!")
     return result
 
-def unpin_msg(bot: Client, msg: Message) -> bool:
-    chat = bot.get_chat(msg.chat.id)
+async def unpin_msg(msg: Message) -> bool:
+    chat = await msg._client.get_chat(msg.chat.id)
     if msg.reply_to_message != None:
-        msg.reply_to_message.unpin()
-        msg.reply("Berhasil unpin pesan yg kau reply!", True)
+        await msg.reply_to_message.unpin()
+        await msg.reply("Berhasil unpin pesan yg kau reply!", True)
         return True
-    bot.unpin_chat_message(msg.chat.id, chat.pinned_message.message_id)
-    msg.reply("Berhasil di unpin pesan!", True)
+    await msg._client.unpin_chat_message(msg.chat.id, chat.pinned_message.message_id)
+    await msg.reply("Berhasil di unpin pesan!", True)
     return True
 
-def pin_msg(msg: Message) -> bool:
+async def pin_msg(msg: Message) -> bool:
     if msg.reply_to_message == None:
-        msg.reply("Balas ke suatu pesan agar ku pin", True)
+        await msg.reply("Balas ke suatu pesan agar ku pin", True)
     else:
-        msg.reply_to_message.pin(True)
-        msg.reply("Pesan berhasil di pin!")
+        await msg.reply_to_message.pin(True)
+        await msg.reply("Pesan berhasil di pin!")
 
-def pin_loud(msg: Message) -> bool:
+async def pin_loud(msg: Message) -> bool:
     if msg.reply_to_message == None:
-        msg.reply("Balas ke suatu pesan agar ku pin", True)
+        await msg.reply("Balas ke suatu pesan agar ku pin", True)
     else:
-        msg.reply_to_message.pin()
-        msg.reply("Pesan ini sudak aku pin dan ku kasih tau ke yg lain!")
+        await msg.reply_to_message.pin()
+        await msg.reply("Pesan ini sudak aku pin dan ku kasih tau ke yg lain!")
 
-def main(msg: Message, bot, cmd: str, args: str) -> bool:
+async def main(msg: Message, cmd: str, args: str) -> bool:
     # Jika bukan anonymous 
     if msg.sender_chat != None:
         if msg.sender_chat.type == "channel":
-            return msg.reply("Oh, you can't to do this 🗿", True)
+            return await msg.reply("Oh, you can't to do this 🗿", True)
     else:
-        user = bot.get_chat_member(msg.chat.id, msg.from_user.id)
+        user = await msg.chat.get_member(msg.from_user.id)
         if user.status != "administrator" and user.status != "creator":
-            return msg.reply("Maaf, anda harus menjadi admin untuk melakukan ini :/", True)
+            return await msg.reply("Maaf, anda harus menjadi admin untuk melakukan ini :/", True)
     if cmd == 'pin':
         if args == None:
-            pin_msg(msg)
+            await pin_msg(msg)
         elif args == 'loud':
-            pin_loud(msg)
+            await pin_loud(msg)
         else:
-            msg.reply("<code>Parameter is invalid!</code>", True)
+            await msg.reply("<code>Parameter is invalid!</code>", True)
     elif cmd == 'unpin':
         if args == None:
-            unpin_msg(bot, msg)
+            await unpin_msg(msg)
         elif args == 'all':
-            unpin_all(bot, msg)
+            await unpin_all(msg)
         else:
-            msg.reply("<code>Parameter is invalid!</code>", True)
+            await msg.reply("<code>Parameter is invalid!</code>", True)
     else:
-        msg.reply("<code>Something went wrong!</code>", True)
+        await msg.reply("<code>Something went wrong!</code>", True)

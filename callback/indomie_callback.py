@@ -7,23 +7,19 @@ link_photo = [
         'https://imgsrv2.voi.id/0Aebc37hu-NXHLDaPAJlGkJzmy4BAn1jYI76GKAII-k/auto/1200/675/sm/1/bG9jYWw6Ly8vcHVibGlzaGVycy8yOTUyNi8yMDIxMDEyOTEzMDctbWFpbi5jcm9wcGVkXzE2MTE5MDA0OTMuanBn.jpg']
 teks = ['a', 'b', 'c', 'd', 'e']
 
-def main(msg: CallbackQuery, bot, command, args: str):
+async def main(msg: CallbackQuery, command, args: str):
     if args == str(msg.from_user.id):
         message = msg.message
         if message.from_user == None:
-            return msg.answer("Anonymous detected +++", True)
+            return await msg.answer("Anonymous detected +++", True)
         button = InlineKeyboardButton("Refresh", callback_data=f'/indomie {msg.from_user.id}')
         markup = InlineKeyboardMarkup([[button]])
         terpilih = random.choice(link_photo)
         tekss = random.choice(teks)
-        # img_data = requests.get(terpilih).content
-        # with open('indomie.jpg', 'wb') as image:
-        #     image.write(img_data)
-        #     image.close()
         photo = InputMediaPhoto(terpilih, tekss)
-        message.edit_media(photo, reply_markup=markup)
+        await message.edit_media(photo, reply_markup=markup)
         if os.path.exists('indomie.jpg'):
             os.remove('indomie.jpg')
         return True
     else:
-        msg.answer("Tombol ini bukan buat kamu lol", show_alert=True)
+        return await msg.answer("Tombol ini bukan buat kamu lol", show_alert=True)
