@@ -14,7 +14,7 @@ from multiprocessing import cpu_count
 
 # Some variables
 owner = 1923158017
-bot = pyrogram.Client("mybot", workers=cpu_count * 4)
+bot = pyrogram.Client("mybot", workers=cpu_count() * 4)
 bot.start()
 me = bot.get_me()
 user_command = {
