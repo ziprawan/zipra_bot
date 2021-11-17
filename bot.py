@@ -10,10 +10,11 @@ from utils import *
 from funcs import *
 from callback import *
 from utils import clean_service
+from multiprocessing import cpu_count
 
 # Some variables
 owner = 1923158017
-bot = pyrogram.Client("mybot", workers=20)
+bot = pyrogram.Client("mybot", workers=cpu_count * 4)
 bot.start()
 me = bot.get_me()
 user_command = {
