@@ -23,13 +23,13 @@ user_command = {
 }
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,
-    'mute': kbm_handler
+    'mute': kbm_handler, 'getpp': getpp_handler
 }
 creator_command = {
      'cleanservice': clean_service
 }
 owner_command = {
-     'getpp': getpp_handler, 'ocr': ocr_handler, 'restart': restart
+     'ocr': ocr_handler
 }
 callbacks = {
     'indomie': indomie_callback, 'kick': kick_callback, 'kickgajadi': kick_callback

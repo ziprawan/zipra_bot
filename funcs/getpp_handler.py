@@ -1,7 +1,7 @@
 from pyrogram.types import Message, InputMediaPhoto
 from pyrogram import Client
 
-def main(msg: Message, bot: Client):
+def main(msg: Message, bot: Client, *any):
     # Cek anonim
     if msg.from_user == None:
         return None

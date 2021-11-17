@@ -99,6 +99,8 @@ class parser:
             if split_by_tag[1] == uname or split_by_tag[1] == '':
                 return split_by_tag[0] # Return 'json'
 
+
+# Just for testing purposes
 if __name__ == '__main__':
     parse = parser('zipra_bot', '/json@zipra_bot /json@ziprabot lah kok wkwkwk')
     print(parse.extract_command('json'))
