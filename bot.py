@@ -23,7 +23,7 @@ user_command = {
 }
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,
-    'mute': kbm_handler, 'getpp': getpp_handler
+    'mute': kbm_handler, 'unmute': kbm_handler,  'getpp': getpp_handler
 }
 creator_command = {
      'cleanservice': clean_service
@@ -65,6 +65,9 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
             text = msg.caption
         else:
             text = None
+
+        if msg.chat.type == 'channel':
+            return
 
         # User id
         if msg.from_user != None:
