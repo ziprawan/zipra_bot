@@ -13,7 +13,7 @@ async def unpin_msg(msg: Message) -> bool:
         await msg.reply("Berhasil unpin pesan yg kau reply!", True)
         return True
     await msg._client.unpin_chat_message(msg.chat.id, chat.pinned_message.message_id)
-    await msg.reply("Berhasil di unpin pesan!", True)
+    await msg.reply("Unpin pesan berhasil!", True)
     return True
 
 async def pin_msg(msg: Message) -> bool:
@@ -49,7 +49,7 @@ async def pin_loud(msg: Message) -> bool:
             chat_id = msg.chat.id,
             message_ids = pinned.updates[0].id
         )
-        return await msg.reply("Pesan ini sudak aku pin dan ku kasih tau ke yg lain!", True)
+        return await msg.reply("Pesan ini sudah aku pin dan ku kasih tau ke yg lain!", True)
 
 async def main(msg: Message, cmd: str, args: str) -> bool:
     # Jika bukan anonymous 
