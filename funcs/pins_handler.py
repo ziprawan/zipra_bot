@@ -1,4 +1,5 @@
 from pyrogram.types import Message
+from pyrogram import raw
 
 async def unpin_all(msg: Message) -> bool:
     result = await msg._client.unpin_all_chat_messages(msg.chat.id)
@@ -19,15 +20,36 @@ async def pin_msg(msg: Message) -> bool:
     if msg.reply_to_message == None:
         await msg.reply("Balas ke suatu pesan agar ku pin", True)
     else:
-        await msg.reply_to_message.pin(True)
-        await msg.reply("Pesan berhasil di pin!")
+        pinned: raw.types.Updates = await msg._client.send(
+            raw.functions.messages.UpdatePinnedMessage(
+                peer = await msg._client.resolve_peer(
+                    msg.chat.id
+                ),
+                id = msg.reply_to_message.message_id,
+                silent = True
+            )
+        )
+        await msg._client.delete_messages(msg.chat.id, pinned.updates[0].id)
+        return await msg.reply("Pesan berhasil di pin!", True)
 
 async def pin_loud(msg: Message) -> bool:
     if msg.reply_to_message == None:
         await msg.reply("Balas ke suatu pesan agar ku pin", True)
     else:
-        await msg.reply_to_message.pin()
-        await msg.reply("Pesan ini sudak aku pin dan ku kasih tau ke yg lain!")
+        pinned = await msg._client.send(
+            raw.functions.messages.UpdatePinnedMessage(
+                peer = await msg._client.resolve_peer(
+                    msg.chat.id
+                ),
+                id = msg.reply_to_message.message_id,
+                silent = False
+            )
+        )
+        await msg._client.delete_messages(
+            chat_id = msg.chat.id,
+            message_ids = pinned.updates[0].id
+        )
+        return await msg.reply("Pesan ini sudak aku pin dan ku kasih tau ke yg lain!", True)
 
 async def main(msg: Message, cmd: str, args: str) -> bool:
     # Jika bukan anonymous 
@@ -37,7 +59,7 @@ async def main(msg: Message, cmd: str, args: str) -> bool:
     else:
         user = await msg.chat.get_member(msg.from_user.id)
         if user.status != "administrator" and user.status != "creator":
-            return await msg.reply("Maaf, anda harus menjadi admin untuk melakukan ini :/", True)
+            return await msg.reply("Maaf, kamu harus menjadi admin untuk melakukan ini :/", True)
     if cmd == 'pin':
         if args == None:
             await pin_msg(msg)

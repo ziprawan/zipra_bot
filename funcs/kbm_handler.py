@@ -4,8 +4,8 @@ from utils.check_admin import main as checkAdmin
 
 async def muting_handler(msg: Message, opsi, user):
     # Checking if user is my bot self
-
-    if user.id == msg._client.get_me().id:
+    me = await msg._client.get_me()
+    if user.id == me.id:
         return await msg.reply("Saya gabisa mute saya sendiri")
 
     # Cek sudah termute atau belum
@@ -15,10 +15,12 @@ async def muting_handler(msg: Message, opsi, user):
         return await msg.reply("User ini tidak ada di grup ini!", True)
     except:
         perm: ChatMember = await msg.chat.get_member(user.username)
-    if await msg.chat.get_member("me").status != 'administrator':
+
+    member_me = await msg.chat.get_member("me")
+    if member_me.status != 'administrator':
         raise ChatAdminRequired
     else:
-        is_muted = perm.can_send_messages
+        is_muted = not perm.can_send_messages
     # Handling mute and unmute
     if opsi == 'mute':
         if is_muted == True:
