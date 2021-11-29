@@ -1,4 +1,3 @@
-from logging import NOTSET
 from pyrogram.types import Message
 
 async def main(msg: Message, *another):
