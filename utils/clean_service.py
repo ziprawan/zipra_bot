@@ -1,6 +1,6 @@
 from utils.service_database import insert_data, get_data
 
-async def main(msg, option):
+async def main(msg, command, option):
     group = msg.chat.id
     if msg.chat.type == "private":
         return
@@ -10,9 +10,9 @@ async def main(msg, option):
         opt = True
     elif option == None or option == "":
         p = await get_data(group)
-        return msg.reply(f"Current settings for cleanservice is: {p}")
+        return await msg.reply(f"Current settings for cleanservice is: {p}")
     else:
-        return msg.reply("Invalid arguments!\n\nArgumen tersedia: yes/no/true/false")
+        return await msg.reply("Invalid arguments!\n\nArgumen tersedia: yes/no/true/false")
 
     result = await insert_data(group, opt)
     if result == True:
