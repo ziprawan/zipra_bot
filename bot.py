@@ -6,6 +6,8 @@ logging.info("Importing Modules....")
 
 import pyrogram
 import time
+import traceback
+import configparser
 from utils import *
 from funcs import *
 from callback import *
@@ -13,6 +15,9 @@ from utils import clean_service
 from multiprocessing import cpu_count
 
 # Some variables
+config = configparser.ConfigParser()
+config.read("config.ini")
+
 owner = 1923158017
 bot = pyrogram.Client("mybot", workers=cpu_count() * 4)
 bot.start()
@@ -23,13 +28,14 @@ user_command = {
 }
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,
-    'mute': kbm_handler, 'unmute': kbm_handler,  'getpp': getpp_handler
+    'mute': kbm_handler, 'unmute': kbm_handler,  'getpp': getpp_handler,
+    'kick': kbm_handler
 }
 creator_command = {
      'cleanservice': clean_service
 }
 owner_command = {
-     'ocr': ocr_handler
+     'ocr': ocr_handler, 'test': test
 }
 callbacks = {
     'indomie': indomie_callback, 'kick': kick_callback, 'kickgajadi': kick_callback
@@ -108,8 +114,8 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
         pass
     except UnicodeDecodeError:
         pass
-    except Exception as e:
-        return await bot.send_message(owner, str(e))
+    except:
+        return await bot.send_message(owner, traceback.format_exc(), parse_mode=None)
     
 
 pyrogram.idle()

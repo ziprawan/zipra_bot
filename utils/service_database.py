@@ -28,7 +28,7 @@ async def insert_data(group, option):
     else:
         raise ValueError("Invalid Option!")
     
-    hmm = get_data(group)
+    hmm = await get_data(group)
     if hmm == None:
         if op == "true":
             cur.execute("INSERT INTO service(id, option) VALUES(?, ?)", (group, op,))

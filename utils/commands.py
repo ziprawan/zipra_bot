@@ -2,7 +2,7 @@ class Parser:
     def __init__(self, username, text):
         self.uname = username
         self.text = text
-        self.prefix = ['/', '!', '$']
+        self.prefix = ['/', '!', '$', '\\']
     async def get_options(self, tujuan):
         pesan = self.text
         if pesan == None:
