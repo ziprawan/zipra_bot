@@ -7,7 +7,6 @@ logging.info("Importing Modules....")
 import pyrogram
 import time
 import traceback
-import configparser
 from utils import *
 from funcs import *
 from callback import *
@@ -15,8 +14,6 @@ from utils import clean_service
 from multiprocessing import cpu_count
 
 # Some variables
-config = configparser.ConfigParser()
-config.read("config.ini")
 
 owner = 1923158017
 bot = pyrogram.Client("mybot", workers=cpu_count() * 4)
@@ -113,6 +110,8 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
     except pyrogram.errors.ChatWriteForbidden:
         pass
     except UnicodeDecodeError:
+        pass
+    except KeyboardInterrupt:
         pass
     except:
         return await bot.send_message(owner, traceback.format_exc(), parse_mode=None)
