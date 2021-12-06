@@ -1,5 +1,6 @@
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
-import requests, random, os
+from pyrogram.errors import MessageNotModified
+import random, os
 link_photo = [
         'https://cdn0-production-images-kly.akamaized.net/tt5Xav7-Kp0oO2pB6G8Kgup01v4=/640x853/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/3594659/original/040089700_1633527349-ikhsan-baihaqi-pbc2wXbQYpI-unsplash.jpg', 
         'https://cdns.klimg.com/merdeka.com/i/w/news/2019/11/11/1124739/540x270/indomie-goreng-jadi-salah-satu-ramen-terlezat-di-dunia-rev-1.jpg', 
@@ -17,7 +18,10 @@ async def main(msg: CallbackQuery, command, args: str):
         terpilih = random.choice(link_photo)
         tekss = random.choice(teks)
         photo = InputMediaPhoto(terpilih, tekss)
-        await message.edit_media(photo, reply_markup=markup)
+        try:
+            await message.edit_media(photo, reply_markup=markup)
+        except MessageNotModified:
+            await msg.answer("Ups, ternyata foto dan caption sama")
         if os.path.exists('indomie.jpg'):
             os.remove('indomie.jpg')
         return True
