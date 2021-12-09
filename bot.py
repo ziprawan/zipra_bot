@@ -4,9 +4,7 @@ import logging
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
 logging.info("Importing Modules....")
 
-import pyrogram
-import time
-import traceback
+import pyrogram, time, traceback, re
 from utils import *
 from funcs import *
 from callback import *
@@ -14,25 +12,34 @@ from utils import clean_service
 from multiprocessing import cpu_count
 
 # Some variables
-
 owner = 1923158017
 bot = pyrogram.Client("mybot", workers=cpu_count() * 4)
 bot.start()
 me = bot.get_me()
 user_command = {
     'start': start_handler, 'ping': ping_handler, 'pong': ping_handler,
-    'json': json_handler, 'kickme': kbm_handler, 'indomie': indomie_handler
+    'json': json_handler, 'kickme': kbm_handler, 'indomie': indomie_handler,
+    'bots': bots_handler, 'test': test, 'notes': notes_handler, 'tags': notes_handler,
+    'python': code_runner, 'assembly': code_runner, 'ats': code_runner, 'bash': code_runner, 'c': code_runner, 
+    'clojure': code_runner, 'cobol': code_runner, 'coffeescript': code_runner, 'cpp': code_runner, 
+    'crystal': code_runner, 'csharp': code_runner, 'd': code_runner, 'elixir': code_runner, 
+    'elm': code_runner, 'erlang': code_runner, 'fsharp': code_runner, 'go': code_runner, 'groovy': code_runner, 
+    'haskell': code_runner, 'idris': code_runner, 'java': code_runner, 'javascript': code_runner, 
+    'julia': code_runner, 'kotlin': code_runner, 'lua': code_runner, 'mercury': code_runner, 
+    'nim': code_runner, 'nix': code_runner, 'ocaml': code_runner, 'perl': code_runner, 'php': code_runner, 
+    'python': code_runner, 'raku': code_runner, 'ruby': code_runner, 'rust': code_runner, 'scala': code_runner, 
+    'swift': code_runner, 'typescript': code_runner 
 }
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,
     'mute': kbm_handler, 'unmute': kbm_handler,  'getpp': getpp_handler,
-    'kick': kbm_handler
+    'kick': kbm_handler, 'tag': notes_handler, 'untag': notes_handler
 }
 creator_command = {
      'cleanservice': clean_service
 }
 owner_command = {
-     'ocr': ocr_handler, 'test': test
+     'ocr': ocr_handler
 }
 callbacks = {
     'indomie': indomie_callback, 'kick': kick_callback, 'kickgajadi': kick_callback
@@ -52,9 +59,15 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
     except Exception as e:
         return await bot.send_message(owner, str(e))
 
+
 # Service message handlers
 @bot.on_message(pyrogram.filters.service)
 async def service_filter(_, msg):
+    if msg.new_chat_members != None:
+        GREETING_MESSAGE = f"Hai {msg.new_chat_members[0].first_name}! Selamat datang di grup {msg.chat.title}"
+        INVITED_BY = msg.from_user.first_name if msg.from_user else msg.sender_chat.title
+        ADDON = f"\n\nKamu dimasukkan oleh: {INVITED_BY}" if msg.new_chat_members[0].id != msg.from_user.id else ""
+        await msg.reply(GREETING_MESSAGE+ADDON, True)
     return await services.main(msg)
 
 # Message handler including edited message
@@ -66,6 +79,8 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
             text = msg.text
         elif msg.caption != None:
             text = msg.caption
+        elif msg.sticker != None:
+            text = msg.sticker.emoji if msg.sticker.emoji != None else None
         else:
             text = None
 
@@ -80,8 +95,6 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
         parser = commands.Parser(me.username, text)
         command = await parser.get_command()
         args = await parser.get_options(command)
-        if command == None:
-            return
         if command in user_command:
             return await user_command[command].main(msg, command, args)
         
@@ -103,6 +116,18 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
                 return await owner_command[command].main(msg, command, args)
         else:
             pass
+
+        # For Tag handler
+        if text == None:
+            return
+        pattern = re.compile(r'#(\w+)')
+        result = pattern.search(text)
+        if result != None:
+            db = databases.Database('databases/notes.db', 'notes')
+            fetched = await db.get_data(['chat_id', 'name'], [str(msg.chat.id), result[1]])
+            if fetched != []:
+                return await msg.reply(fetched[0][2], True)
+            
     except pyrogram.errors.FloodWait as e:
         time.sleep(e.x)
     except pyrogram.errors.ChatAdminRequired as e:
@@ -111,11 +136,14 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
         pass
     except UnicodeDecodeError:
         pass
-    except KeyboardInterrupt:
-        pass
     except:
+        await msg.reply("Terjadi kesalahan", True)
+        await bot.send_message(owner, f"Terjadi kesalahan. <a href=\"https://t.me/c/{str(msg.chat.id).split('-100')[1]}/{msg.message_id}\">TKJ</a>")
         return await bot.send_message(owner, traceback.format_exc(), parse_mode=None)
     
 
-pyrogram.idle()
+try:
+    pyrogram.idle()
+except KeyboardInterrupt:
+    pass
 bot.stop()
