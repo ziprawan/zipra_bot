@@ -1,14 +1,11 @@
-import sqlite3
-from typing import Iterable
+from utils.databases import Database
+import asyncio
 
-db = sqlite3.connect("utils/data.db", check_same_thread=False)
-cur = db.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS service(id int, option text(5))")
+db = Database("databases/data.db", 'service')
+asyncio.run(db.execute("CREATE TABLE IF NOT EXISTS service(id int, option text(5))"))
 
 async def get_data(group):
-    command = "SELECT * FROM service where id=?"
-    cur.execute(command, (group,))
-    fetched = cur.fetchall()
+    fetched = await db.get_data(['id'], [group])
     try:
         result = fetched[0][1]
     except:
@@ -31,12 +28,10 @@ async def insert_data(group, option):
     hmm = await get_data(group)
     if hmm == None:
         if op == "true":
-            cur.execute("INSERT INTO service(id, option) VALUES(?, ?)", (group, op,))
-            db.commit()
+            await db.insert_data(['id', 'option'], [group, op])
             return True
         elif op == "false":
-            cur.execute("INSERT INTO service(id, option) VALUES(?, ?)", (group, op,))
-            db.commit()
+            await db.insert_data(['id', 'option'], [group, op])
             return False
         else:
             raise ValueError("Oh")
@@ -44,8 +39,7 @@ async def insert_data(group, option):
         if op == "true":
             return True
         elif op == "false":
-            cur.execute("UPDATE service SET option=? WHERE id=?", (op, group,))
-            db.commit()
+            await db.update_data(['option'], [op], ['id'], [group])
             return False
         else:
             raise ValueError("Oh")
@@ -53,8 +47,7 @@ async def insert_data(group, option):
         if op == "false":
             return False
         elif op == "true":
-            cur.execute("UPDATE service SET option=? WHERE id=?", (op, group,))
-            db.commit()
+            await db.update_data(['option'], [op], ['id'], [group])
             return True
         else:
             raise ValueError("Oh (2)")
