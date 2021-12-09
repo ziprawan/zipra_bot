@@ -24,7 +24,7 @@ async def muting_handler(msg: Message, opsi, user):
     elif opsi == 'unmute':
         chat_permission = msg.chat.permissions
         permission = ChatPermissions(
-            can_send_messages = chat_permission.can_send_messages,
+            can_send_messages = True,
             can_send_media_messages = chat_permission.can_send_media_messages,
             can_send_stickers = chat_permission.can_send_stickers,
             can_send_animations = chat_permission.can_send_animations,
@@ -78,7 +78,7 @@ async def kick(msg):
             elif i.type == 'text_mention':
                 user = i.user
                 await kicking_handler(msg, user)
-            break
+            
     else:
         return await msg.reply("Reply atau mention ke user biar aku kick!", True)
 
@@ -108,26 +108,26 @@ async def ban(msg):
 
 async def mute(msg: Message):
     # Check if chat type is private or not
-    logging.debug("mute: Checking Chat type...")
+    logging.info("mute: Checking Chat type...")
     if msg.chat.type == 'private': # Jika iya, tidak melakukan apapun
         return
-    logging.debug("mute: Checking Reply Message...")
+    logging.info("mute: Checking Reply Message...")
     if msg.reply_to_message != None:
-        logging.debug("mute: Checking either channel/anonymous...")
+        logging.info("mute: Checking either channel/anonymous...")
         if msg.reply_to_message.from_user == None:
-            logging.debug("mute: channel/anonymous detected!")
+            logging.info("mute: channel/anonymous detected!")
             return await msg.reply("Uhh, saya gabisa mute anonim atau channel :v", True)
         else:
-            logging.debug("mute: User detected! Muting...")
+            logging.info("mute: User detected! Muting...")
             return await muting_handler(msg, 'mute', msg.reply_to_message.from_user)
     elif msg.entities != None:
-        logging.debug("mute: Reply Message not detected. Che👋cking Entities...")
+        logging.info("mute: Reply Message not detected. Checking Entities...")
         for i in msg.entities:
-            logging.debug("mute: Entities found! Parsing for mention...")
+            logging.info("mute: Entities found! Parsing for mention...")
             if i.type == 'mention':
-                logging.debug("mute: mention type detected!")
+                logging.info("mute: mention type detected!")
                 try:
-                    logging.debug("mute: Checking user info...")
+                    logging.info("mute: Checking user info...")
                     user = await msg._client.get_users(msg.text[i.offset:i.offset + i.length])
                 except UsernameNotOccupied:
                     logging.ERROR("mute: Username Not Occupied!")
@@ -138,18 +138,19 @@ async def mute(msg: Message):
                 except IndexError:
                     logging.ERROR("mute: Index Error!")
                     return await msg.reply("Channel/Grup ndak bisa di mute banh", True)
-                logging.debug("mute: Muting...")
+                logging.info("mute: Muting...")
                 await muting_handler(msg, 'mute', user)
-                break
+                
             elif i.type == 'text_mention':
-                logging.debug("mute: text_mention type detected!")
+                logging.info("mute: text_mention type detected!")
                 user = i.user
-                logging.debug("mute: Muting...")
+                logging.info("mute: Muting...")
                 await muting_handler(msg, 'mute', user)
-                break
-            logging.debug("mute: Couldn't find mention types on entities :(")
+            else:
+                logging.info("mute: Couldn't find mention types on entities :(")
+                return await msg.reply("uhgesbgfrcyewgyjfgucyrdug")
     else:
-        logging.debug("mute: User not specified!")
+        logging.info("mute: User not specified!")
         return await msg.reply("Reply atau mention ke user biar aku mute!", True)
 
 async def unmute(msg: Message):
@@ -173,7 +174,7 @@ async def unmute(msg: Message):
             elif i.type == 'text_mention':
                 user = i.user
                 await muting_handler(msg, 'unmute', user)
-            break
+            
     else:
         return await msg.reply("Reply atau mention ke user biar aku unmute!", True)
 
