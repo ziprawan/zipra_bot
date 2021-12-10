@@ -78,4 +78,14 @@ async def main(msg: Message, cmd, args):
                 error = dump['error']
                 stderr = dump['stderr']
                 message = f'Hasil: {stdout}\nError: {error}\nStderr: {stderr}'
-                return await msg.reply(message, True)
+                if len(message) < 4096:
+                    return await msg.reply(message, True)
+                else:
+                    filename = f"zipra.{langs[cmd]}.txt"
+                    with open(filename, 'w') as file:
+                        file.write(message)
+                    await msg.reply_document(filename, True)
+                    import os
+                    if os.path.exists(filename):
+                        return os.remove(filename)
+                    return True

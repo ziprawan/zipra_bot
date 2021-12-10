@@ -20,7 +20,7 @@ user_command = {
     'start': start_handler, 'ping': ping_handler, 'pong': ping_handler,
     'json': json_handler, 'kickme': kbm_handler, 'indomie': indomie_handler,
     'bots': bots_handler, 'test': test, 'notes': notes_handler, 'tags': notes_handler,
-    'python': code_runner, 'assembly': code_runner, 'ats': code_runner, 'bash': code_runner, 'c': code_runner, 
+    'assembly': code_runner, 'ats': code_runner, 'bash': code_runner, 'c': code_runner, 
     'clojure': code_runner, 'cobol': code_runner, 'coffeescript': code_runner, 'cpp': code_runner, 
     'crystal': code_runner, 'csharp': code_runner, 'd': code_runner, 'elixir': code_runner, 
     'elm': code_runner, 'erlang': code_runner, 'fsharp': code_runner, 'go': code_runner, 'groovy': code_runner, 
