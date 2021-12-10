@@ -1,4 +1,5 @@
 from pyrogram.types import Message
+from pyrogram.errors import UserNotParticipant
 
 async def main(msg: Message):
     """Untuk mengecek apakah user di grup itu termasuk administrator/anonymous/creator"""
@@ -9,7 +10,11 @@ async def main(msg: Message):
         return False
     else:
         # Else
-        result = await msg.chat.get_member(msg.from_user.id)
+        try:
+            result = await msg.chat.get_member(msg.from_user.id)
+        except UserNotParticipant:
+            # Dia tak ada di chat tersebut
+            return False
         if result.status == 'administrator':
             return 'administrator'
         elif result.status == 'creator':

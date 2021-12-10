@@ -28,7 +28,7 @@ user_command = {
     'julia': code_runner, 'kotlin': code_runner, 'lua': code_runner, 'mercury': code_runner, 
     'nim': code_runner, 'nix': code_runner, 'ocaml': code_runner, 'perl': code_runner, 'php': code_runner, 
     'python': code_runner, 'raku': code_runner, 'ruby': code_runner, 'rust': code_runner, 'scala': code_runner, 
-    'swift': code_runner, 'typescript': code_runner 
+    'swift': code_runner, 'typescript': code_runner, 'copy': copy_handler 
 }
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,

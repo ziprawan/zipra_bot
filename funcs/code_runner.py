@@ -72,7 +72,7 @@ async def main(msg: Message, cmd, args):
             status = result.status
             dump = await result.json()
             if status != 200:
-                return await msg.reply("Server memberikan kode http yg tidak valid. HTTP Code: " + status, True)
+                return await msg.reply(f"Server memberikan kode http yg tidak valid. HTTP Code: {status}", True)
             else:
                 stdout = dump['stdout']
                 error = dump['error']
