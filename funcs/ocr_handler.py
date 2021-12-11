@@ -1,5 +1,4 @@
 import pytesseract, time, os
-from PIL import Image
 from pyrogram.types import Message
 
 async def remove(path):
@@ -17,14 +16,12 @@ async def main(msg: Message, *another):
             await msg.reply(f'Hasil OCR:\n\n{result}')
             await remove(path)
         elif msg.reply_to_message.sticker != None:
+            if msg.reply_to_message.sticker.is_animated == True:
+                return await msg.reply("Maaf, saya tak bisa OCR stiker bergerak", True)
             path = await msg.reply_to_message.download()
-            filename = f'ocr-temp{ups}.png'
-            img = Image.open(path)
-            img.save(filename, 'png')
-            result = pytesseract.image_to_string(filename)
+            result = pytesseract.image_to_string(path)
             await msg.reply(f'Hasil OCR:\n\n{result}')
             await remove(path)
-            await remove(filename)
         else:
             return await msg.reply("Maaf, OCR hanya mendukung photo dan sticker")
             
