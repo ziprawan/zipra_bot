@@ -5,10 +5,11 @@ class Parser:
         self.prefix = ['/', '!', '$', '\\']
     async def get_options(self, tujuan):
         pesan = self.text
-        if pesan == None:
+        if pesan == None or tujuan == None:
             return None
         uname = self.uname
-        split_space = pesan.split(" ")
+        tmp = pesan.replace(pesan[0]+tujuan, '', 1)
+        split_space = pesan.split('\n') if tmp[:1] == '\n' else pesan.split(' ')
         if len(split_space) <= 1:
             return None
         else:
@@ -20,14 +21,14 @@ class Parser:
                             tujuan_by_uname = f'{j}@{uname}'
                             if perintah[1] == j or perintah[1] == tujuan_by_uname:
                                 hmm = pesan.replace(split_space[0], '', 1)
-                                args = hmm.replace(' ', '', 1)
+                                args = hmm.replace('\n', '', 1) if hmm[:1] == '\n' else hmm.replace(' ', '', 1)
                                 return args
                         return None
                     elif type(tujuan) == str:
                         tujuan_by_uname = f'{tujuan}@{uname}'
                         if perintah[1] == tujuan or perintah[1] == tujuan_by_uname:
                             hmm = pesan.replace(split_space[0], '', 1)
-                            args = hmm.replace(' ', '', 1)
+                            args = hmm.replace('\n', '', 1) if hmm[:1] == '\n' else hmm.replace(' ', '', 1)
                             return args
                         else:
                             return None
@@ -35,13 +36,19 @@ class Parser:
                         return None
     
     async def get_command(self):
-        teks = self.text # Misalkan /json@zipra_bot tes
+        teks: str = self.text # Misalkan /json@zipra_bot tes
         if teks == None:
             return None
         uname = self.uname # zipra_bot
-        prefix = self.prefix # Ada $ / dan !
-        split_by_space = teks.split(' ') # /json@ziprabot dan tes
+        prefix = self.prefix # Ada $ / dan ! dll
         if teks[0] in prefix:
+            if '\n' in teks:
+                splitted = teks.split("\n", 1)
+                if ' ' in splitted[0]:
+                    splitted = teks.split(' ', 1)
+            else:
+                splitted = teks.split(' ', 1)
+            split_by_space = splitted
             split_by_prefix = split_by_space[0].split(teks[0]) # '' dan json@zipra_bot
             split_by_tag = split_by_prefix[1].split('@') # json dan zipra_bot
             if len(split_by_tag) == 1:
