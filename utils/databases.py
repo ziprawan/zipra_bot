@@ -41,7 +41,7 @@ class Database:
         try:
             cur.execute(COMMAND, bind)
         except sqlite3.OperationalError as error:
-            return error
+            raise error
         return cur.fetchall()
 
         
@@ -76,7 +76,7 @@ class Database:
             self.cur.execute(COMMAND, bind)
             self.db.commit()
         except sqlite3.OperationalError as error:
-            return error
+            raise error
         return True
 
 
@@ -107,7 +107,7 @@ class Database:
             cur.execute(COMMAND, bind)
             db.commit()
         except sqlite3.OperationalError as error:
-            return error
+            raise error
         return True
 
 
@@ -164,7 +164,7 @@ class Database:
             cur.execute(COMMAND, bind)
             db.commit()
         except sqlite3.OperationalError as error:
-            return error
+            raise error
 
         return True
 

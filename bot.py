@@ -4,7 +4,7 @@ import logging
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
 logging.info("Importing Modules....")
 
-import pyrogram, time, traceback, re
+import pyrogram, asyncio, traceback, re
 from utils import *
 from funcs import *
 from callback import *
@@ -12,13 +12,13 @@ from utils import clean_service
 from multiprocessing import cpu_count
 
 # Some variables
-owner = 1923158017
+owner = [1923158017, 1506906677]
 bot = pyrogram.Client("mybot", workers=cpu_count() * 4)
 bot.start()
 me = bot.get_me()
 user_command = {
     'start': start_handler, 'ping': ping_handler, 'pong': ping_handler,
-    'json': json_handler, 'kickme': kbm_handler, 'indomie': indomie_handler,
+    'dbg': json_handler, 'kickme': kbm_handler, 'indomie': indomie_handler,
     'bots': bots_handler, 'test': test, 'notes': notes_handler, 'tags': notes_handler,
     'assembly': code_runner, 'ats': code_runner, 'bash': code_runner, 'c': code_runner, 
     'clojure': code_runner, 'cobol': code_runner, 'coffeescript': code_runner, 'cpp': code_runner, 
@@ -32,14 +32,14 @@ user_command = {
 }
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,
-    'mute': kbm_handler, 'unmute': kbm_handler,  'getpp': getpp_handler,
+    'mute': kbm_handler,  'getpp': getpp_handler,
     'kick': kbm_handler, 'tag': notes_handler, 'untag': notes_handler
 }
 creator_command = {
      'cleanservice': clean_service
 }
 owner_command = {
-     'apakek': ocr_handler
+     'apakek': ocr_handler, 'status': status_handler, 'exec': exec_handler, 'info': info_handler
 }
 callbacks = {
     'indomie': indomie_callback, 'kick': kick_callback, 'kickgajadi': kick_callback
@@ -62,8 +62,10 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
 
 # Service message handlers
 @bot.on_message(pyrogram.filters.service)
-async def service_filter(_, msg):
+async def service_filter(_, msg: pyrogram.types.Message):
     if msg.new_chat_members != None:
+        if msg.new_chat_members[0].is_self:
+            return await msg.reply(f"Halo, perkenalkan namaku {(await msg._client.get_me()).first_name}. Saya sedang dalam pengembangan oleh @ridhwan_aziz. Semoga bot ini bisa berkembang agar bisa mengatur grup ini!\n\nTerima kasih sudah menggunakan zipra!")
         GREETING_MESSAGE = f"Hai {msg.new_chat_members[0].first_name}! Selamat datang di grup {msg.chat.title}"
         INVITED_BY = msg.from_user.first_name if msg.from_user else msg.sender_chat.title
         ADDON = f"\n\nKamu dimasukkan oleh: {INVITED_BY}" if msg.new_chat_members[0].id != msg.from_user.id else ""
@@ -112,7 +114,7 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
             else:
                 return await msg.reply("Kamu harus menjadi creator grup ini!")
         elif command in owner_command:
-            if userid == owner:
+            if userid in owner:
                 return await owner_command[command].main(msg, command, args)
         else:
             pass
@@ -129,7 +131,7 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
                 return await msg.reply(fetched[0][2], True)
             
     except pyrogram.errors.FloodWait as e:
-        time.sleep(e.x)
+        await asyncio.sleep(e.x)
     except pyrogram.errors.ChatAdminRequired as e:
         return await msg.reply("Aku perlu menjadi admin untuk melakukan itu :)", True)
     except pyrogram.errors.ChatWriteForbidden:

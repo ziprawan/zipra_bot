@@ -5,7 +5,7 @@ Insya Allah, bot ini akan berkembang agar bisa mengatur grup dengan mudah 👍
 
 Kalau pengen lihat bantuan, ketik /help aja 👌"""
 
-async def main(msg: Message, *another):
+async def main(msg: Message, cmd, args):
     if msg.chat.type != "private":
         me = await msg._client.get_me()
         uname = str(me.username)
@@ -20,5 +20,7 @@ async def main(msg: Message, *another):
                 ]
                 )
             )
+    elif args:
+        return await msg.reply(args)
     else:
         await msg.reply_text(START)

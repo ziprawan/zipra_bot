@@ -77,7 +77,11 @@ async def main(msg: Message, cmd, args):
                 stdout = dump['stdout']
                 error = dump['error']
                 stderr = dump['stderr']
-                message = f'Hasil: {stdout}\nError: {error}\nStderr: {stderr}'
+                if stdout == '' and error != '':
+                    # Eksekusi kode error
+                    message = stderr
+                elif stdout != '' and error == '':
+                    message = stdout
                 if len(message) < 4096:
                     return await msg.reply(message, True)
                 else:
