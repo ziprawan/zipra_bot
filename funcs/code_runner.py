@@ -82,6 +82,8 @@ async def main(msg: Message, cmd, args):
                     message = stderr
                 elif stdout != '' and error == '':
                     message = stdout
+                else:
+                    message = "```No Output!```"
                 if len(message) < 4096:
                     return await msg.reply(message, True)
                 else:

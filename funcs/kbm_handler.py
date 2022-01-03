@@ -51,7 +51,10 @@ async def kicking_handler(msg: Message, user):
         return await msg.reply("Wah wah wah, dia ga ada disini kok minta di kick :v", True)
     
     kicked = await msg.chat.kick_member(p.user.id)
-    await kicked.delete()
+    try:
+        await kicked.delete()
+    except AttributeError:
+        pass
     await msg.chat.unban_member(p.user.id)
     return await msg.reply(f'<a href=\'tg://user?id={p.user.id}\'>{p.user.first_name}</a> berhasil aku kick!', True)
 
@@ -75,6 +78,9 @@ async def kick(msg):
                     return await msg.reply("Username tidak ditemukan!", True)
                 except PeerIdInvalid:
                     return await msg.reply("Username tidak ditemukan!", True)
+                except IndexError as i:
+                    print(i)
+                    return await msg.reply("Just give username of user, not chat!\n\nIndexError")
             elif i.type == 'text_mention':
                 user = i.user
                 await kicking_handler(msg, user)
@@ -130,13 +136,13 @@ async def mute(msg: Message):
                     logging.info("mute: Checking user info...")
                     user = await msg._client.get_users(msg.text[i.offset:i.offset + i.length])
                 except UsernameNotOccupied:
-                    logging.ERROR("mute: Username Not Occupied!")
+                    logging.error("mute: Username Not Occupied!")
                     return await msg.reply("Username tidak ditemukan!", True)
                 except PeerIdInvalid:
-                    logging.ERROR("mute: Peer Id Invalid")
+                    logging.error("mute: Peer Id Invalid")
                     return await msg.reply("Username tidak ditemukan!", True)
                 except IndexError:
-                    logging.ERROR("mute: Index Error!")
+                    logging.error("mute: Index Error!")
                     return await msg.reply("Channel/Grup ndak bisa di mute banh", True)
                 logging.info("mute: Muting...")
                 await muting_handler(msg, 'mute', user)
@@ -170,6 +176,9 @@ async def unmute(msg: Message):
                     return await msg.reply("Username tidak ditemukan!", True)
                 except PeerIdInvalid:
                     return await msg.reply("Username tidak ditemukan!", True)
+                except IndexError as i:
+                    print(i)
+                    return await msg.reply("Just give username of user, not chat!\n\nIndexError")
                 await muting_handler(msg, 'unmute', user)
             elif i.type == 'text_mention':
                 user = i.user

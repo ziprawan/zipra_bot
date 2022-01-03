@@ -31,10 +31,10 @@ async def add_tag(msg: Message, db: Database, args):
         
         if (await db.get_data(['name'], [tag_name])) != []:
             await db.update_data(['content'], [content], ['chat_id', 'name'], [chat_id, tag_name])
-            return await msg.reply(f"Tag {tag_name} berhasil di update!")
+            return await msg.reply(f"Tag #{tag_name} berhasil di update!")
         else:
             await db.insert_data(['chat_id', 'content', 'name'], [chat_id, content, tag_name])
-            return await msg.reply(f"Tag {tag_name} berhasil di simpan!")
+            return await msg.reply(f"Tag #{tag_name} berhasil di simpan!")
     else:
         if temp_content == '':
             return await msg.reply("Reply ke message atau tambahkan teks untuk menambahkan tag!")
@@ -42,10 +42,10 @@ async def add_tag(msg: Message, db: Database, args):
             content = temp_content
             if (await db.get_data(['name'], [tag_name])) != []:
                 await db.update_data(['content'], [content], ['chat_id', 'name'], [chat_id, tag_name])
-                return await msg.reply(f"Tag {tag_name} berhasil di update!")
+                return await msg.reply(f"Tag #{tag_name} berhasil di update!")
             else:
                 await db.insert_data(['chat_id', 'content', 'name'], [chat_id, content, tag_name])
-                return await msg.reply(f"Tag {tag_name} berhasil di simpan!")
+                return await msg.reply(f"Tag #{tag_name} berhasil di simpan!")
 
 
 async def delete_tag(msg: Message, db: Database, args):
@@ -55,13 +55,16 @@ async def delete_tag(msg: Message, db: Database, args):
     pattern = re.compile(r'^(#?(\w+))')
     r = pattern.search(args)
     tag_name = r[2]
+    fetched_tag = await db.get_data(['chat_id', 'name'], [msg.chat.id, tag_name])
+    if fetched_tag == []:
+        return await msg.reply(f"Tag #{tag_name} tidak ditemukan!")
     await db.delete_data(['chat_id', 'name'], [chat_id, tag_name])
-    return await msg.reply(f"Tag {tag_name} berhasil dihapus!")
+    return await msg.reply(f"Tag #{tag_name} berhasil dihapus!")
 
 
 async def get_tag(msg: Message, db):
     # Create table for current group if doesn't exists
-    await db.execute(f"CREATE TABLE IF NOT EXISTS notes(id INT, name TEXT, content TEXT, document TEXT)")
+    await db.execute(f"CREATE TABLE IF NOT EXISTS notes(id INT, chat_id INT, name TEXT, content TEXT, document TEXT)")
 
     # Get table content
     # db.execute("SELECT * FROM notes WHERE chat_id=?", (msg.chat.id,))
@@ -69,12 +72,12 @@ async def get_tag(msg: Message, db):
     fetched = await db.get_data(['chat_id'], [msg.chat.id])
 
     # Listing all fetched data
-    message = "Notes in this chat are:\n\n"
     if fetched == []:
         message = "There is no notes in this chat!"
     else:
+        message = "Notes in this chat are:\n\n"
         for i in fetched:
-            addon = f"~ <code>#{i[5]}</code>\n"
+            addon = f"~ <code>#{i[2]}</code>\n"
             message += addon
     
     # Send result

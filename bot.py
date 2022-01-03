@@ -39,7 +39,7 @@ creator_command = {
      'cleanservice': clean_service
 }
 owner_command = {
-     'apakek': ocr_handler, 'status': status_handler, 'exec': exec_handler, 'info': info_handler
+     'apakek': ocr_handler, 'exec': exec_handler, 'kang': kang_handler
 }
 callbacks = {
     'indomie': indomie_callback, 'kick': kick_callback, 'kickgajadi': kick_callback
@@ -53,7 +53,7 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
         parser = commands.Parser(me.username, msg.data)
         # print(msg.data)
         command = await parser.get_command()
-        args = await parser.get_options(command)
+        args = await parser.get_options()
         if command in callbacks:
             return await callbacks[command].main(msg, command, args)
     except Exception as e:
@@ -64,12 +64,14 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
 @bot.on_message(pyrogram.filters.service)
 async def service_filter(_, msg: pyrogram.types.Message):
     if msg.new_chat_members != None:
-        if msg.new_chat_members[0].is_self:
-            return await msg.reply(f"Halo, perkenalkan namaku {(await msg._client.get_me()).first_name}. Saya sedang dalam pengembangan oleh @ridhwan_aziz. Semoga bot ini bisa berkembang agar bisa mengatur grup ini!\n\nTerima kasih sudah menggunakan zipra!")
-        GREETING_MESSAGE = f"Hai {msg.new_chat_members[0].first_name}! Selamat datang di grup {msg.chat.title}"
-        INVITED_BY = msg.from_user.first_name if msg.from_user else msg.sender_chat.title
-        ADDON = f"\n\nKamu dimasukkan oleh: {INVITED_BY}" if msg.new_chat_members[0].id != msg.from_user.id else ""
-        await msg.reply(GREETING_MESSAGE+ADDON, True)
+        for i in msg.new_chat_members:
+            new_member = i
+            if new_member.is_self:
+                return await msg.reply(f"Halo, perkenalkan namaku {(await msg._client.get_me()).first_name}. Saya sedang dalam pengembangan oleh @ridhwan_aziz. Semoga bot ini bisa berkembang agar bisa mengatur grup ini!\n\nTerima kasih sudah menggunakan zipra!")
+            GREETING_MESSAGE = f"Hai {new_member.first_name}! Selamat datang di grup {msg.chat.title}"
+            INVITED_BY = msg.from_user.first_name if msg.from_user else msg.sender_chat.title
+            ADDON = f"\n\nKamu dimasukkan oleh: {INVITED_BY}" if new_member.id != msg.from_user.id else ""
+            await msg.reply(GREETING_MESSAGE+ADDON, True)
     return await services.main(msg)
 
 # Message handler including edited message
@@ -96,7 +98,7 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
             userid = None
         parser = commands.Parser(me.username, text)
         command = await parser.get_command()
-        args = await parser.get_options(command)
+        args = await parser.get_options()
         if command in user_command:
             return await user_command[command].main(msg, command, args)
         
@@ -126,9 +128,12 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
         result = pattern.search(text)
         if result != None:
             db = databases.Database('databases/notes.db', 'notes')
+            await db.execute(f"CREATE TABLE IF NOT EXISTS notes(id INT, chat_id INT, name TEXT, content TEXT, document TEXT)")
             fetched = await db.get_data(['chat_id', 'name'], [str(msg.chat.id), result[1]])
             if fetched != []:
-                return await msg.reply(fetched[0][2], True)
+                # 0 is id, 1 is chat_id, 2 is tagname, 3 is content
+                # 4 is document_id or others
+                return await msg.reply(fetched[0][3], True)
             
     except pyrogram.errors.FloodWait as e:
         await asyncio.sleep(e.x)
@@ -140,8 +145,8 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
         pass
     except:
         await msg.reply("Terjadi kesalahan", True)
-        await bot.send_message(owner, f"Terjadi kesalahan. <a href=\"https://t.me/c/{str(msg.chat.id).split('-100')[1]}/{msg.message_id}\">TKJ</a>")
-        return await bot.send_message(owner, traceback.format_exc(), parse_mode=None)
+        await bot.send_message(owner[0], f"Terjadi kesalahan. <a href=\"https://t.me/c/{str(msg.chat.id).split('-100')[1]}/{msg.message_id}\">TKJ</a>")
+        return await bot.send_message(owner[0], traceback.format_exc(), parse_mode=None)
     
 
 try:
