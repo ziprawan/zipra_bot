@@ -72,16 +72,16 @@ async def main(msg: Message, cmd, args):
             status = result.status
             dump = await result.json()
             if status != 200:
-                return await msg.reply(f"Server memberikan kode http yg tidak valid. HTTP Code: <a href=\"https://http.cat/{status}\">⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣</a>{status}", True)
+                return await msg.reply(f"Server memberikan kode http yg tidak valid. HTTP Code: <a href=\"https://http.cat/{status}\">///ll⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣⁣</a>{status}", True)
             else:
                 stdout = dump['stdout']
                 error = dump['error']
                 stderr = dump['stderr']
                 if stdout == '' and error != '':
                     # Eksekusi kode error
-                    message = stderr
+                    message = stderr.replace('glot', 'aziz', 1)
                 elif stdout != '' and error == '':
-                    message = stdout
+                    message = stdout.replace('glot', 'aziz', 1)
                 else:
                     message = "```No Output!```"
                 if len(message) < 4096:

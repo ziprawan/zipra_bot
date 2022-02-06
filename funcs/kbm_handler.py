@@ -50,7 +50,7 @@ async def kicking_handler(msg: Message, user):
     except:
         return await msg.reply("Wah wah wah, dia ga ada disini kok minta di kick :v", True)
     
-    kicked = await msg.chat.kick_member(p.user.id)
+    kicked = await msg.chat.ban_member(p.user.id)
     try:
         await kicked.delete()
     except AttributeError:

@@ -14,12 +14,14 @@ from multiprocessing import cpu_count
 # Some variables
 owner = [1923158017, 1506906677]
 bot = pyrogram.Client("mybot", workers=cpu_count() * 4)
-bot.start()
-me = bot.get_me()
+
+with bot:
+    me = bot.get_me()
+
 user_command = {
     'start': start_handler, 'ping': ping_handler, 'pong': ping_handler,
     'dbg': json_handler, 'kickme': kbm_handler, 'indomie': indomie_handler,
-    'bots': bots_handler, 'test': test, 'notes': notes_handler, 'tags': notes_handler,
+    'bots': bots_handler, 'notes': notes_handler, 'tags': notes_handler,
     'assembly': code_runner, 'ats': code_runner, 'bash': code_runner, 'c': code_runner, 
     'clojure': code_runner, 'cobol': code_runner, 'coffeescript': code_runner, 'cpp': code_runner, 
     'crystal': code_runner, 'csharp': code_runner, 'd': code_runner, 'elixir': code_runner, 
@@ -33,13 +35,14 @@ user_command = {
 admin_command = {
     'del': del_handler, 'pin': pins_handler, 'unpin': pins_handler,
     'mute': kbm_handler,  'getpp': getpp_handler,
-    'kick': kbm_handler, 'tag': notes_handler, 'untag': notes_handler
+    'kick': kbm_handler, 'tag': notes_handler, 'untag': notes_handler,
+    'test': test
 }
 creator_command = {
      'cleanservice': clean_service
 }
 owner_command = {
-     'apakek': ocr_handler, 'exec': exec_handler, 'kang': kang_handler
+     'apakek': ocr_handler, 'exec': exec_handler, 'kang': kang_handler, 
 }
 callbacks = {
     'indomie': indomie_callback, 'kick': kick_callback, 'kickgajadi': kick_callback
@@ -59,19 +62,64 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
     except Exception as e:
         return await bot.send_message(owner, str(e))
 
+# Anti react mode example
+# @bot.on_raw_update()
+# async def raw_update_handler(*args):
+#     msg: pyrogram.raw.types.Message = args[1].message
+#     chat_id = int("-100" + str(msg.peer_id.channel_id))
+#     if msg.from_id == me.id:
+#         return None
+#     if msg.edit_hide == False:
+#         await bot.send_message(chat_id, "PONG!!!", reply_to_message_id=msg.id)
+#     else:
+#         # Reacted
+#         return
+
 
 # Service message handlers
 @bot.on_message(pyrogram.filters.service)
 async def service_filter(_, msg: pyrogram.types.Message):
     if msg.new_chat_members != None:
+        channel = (await bot.get_chat(msg.chat.id)).linked_chat
+        try:
+            link_ch = f"https://t.me/{channel.username}" if channel.username != None else (await channel.export_invite_link())
+            error = False
+            subs = []
+            logging.info("Get subscribers on linked chat")
+            async for i in channel.iter_members():
+                subs.append(i.user.id)
+            logging.info(f"List subs: {subs}")
+        except Exception as e:
+            logging.info(f"Failed at channel.iter_members()\n{str(e)}")
+            error = True
+            pass
         for i in msg.new_chat_members:
             new_member = i
+            if new_member.id in owner:
+                await msg.reply("Whoa, ada masterku datang 🙇‍♂️", False)
+                return await msg.reply_sticker("CAACAgUAAx0CX1X-DgACP6ph_goBL4RD2iNTFc1M28F6mjdpmgAC7AIAAvtTAVYkSdV08AO-Ex4E", False)
+            if new_member.id not in subs:
+                try:
+                    logging.info("Checking if new member is a bot")
+                    if not new_member.is_bot:
+                        if not error:
+                            logging.info("New member is not a bot")
+                            logging.info("Send message")
+                            await msg.reply(f"<a href='tg://user?id={i.id}'>{i.first_name}</a> ditendang, karena tidak join channel <a href='{link_ch}'>{channel.title}</a>", False, disable_web_page_preview=True)
+                            logging.info("Ban user")
+                            await msg.chat.ban_member(i.id)
+                            logging.info("Unban user")
+                            await msg.chat.unban_member(i.id)
+                            return None
+                except Exception as e:
+                    logging.info(f"Failed to ban/unban/send.\n{str(e)}")
+                    pass
             if new_member.is_self:
-                return await msg.reply(f"Halo, perkenalkan namaku {(await msg._client.get_me()).first_name}. Saya sedang dalam pengembangan oleh @ridhwan_aziz. Semoga bot ini bisa berkembang agar bisa mengatur grup ini!\n\nTerima kasih sudah menggunakan zipra!")
+                return await msg.reply(f"Halo, perkenalkan namaku {(await msg._client.get_me()).first_name}. Saya sedang dalam pengembangan oleh @ridhwan_aziz. Semoga bot ini bisa berkembang agar bisa mengatur grup ini!\n\nTerima kasih sudah menggunakan zipra!", False)
             GREETING_MESSAGE = f"Hai {new_member.first_name}! Selamat datang di grup {msg.chat.title}"
             INVITED_BY = msg.from_user.first_name if msg.from_user else msg.sender_chat.title
             ADDON = f"\n\nKamu dimasukkan oleh: {INVITED_BY}" if new_member.id != msg.from_user.id else ""
-            await msg.reply(GREETING_MESSAGE+ADDON, True)
+            await msg.reply(GREETING_MESSAGE+ADDON, False)
     return await services.main(msg)
 
 # Message handler including edited message
@@ -131,8 +179,6 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
             await db.execute(f"CREATE TABLE IF NOT EXISTS notes(id INT, chat_id INT, name TEXT, content TEXT, document TEXT)")
             fetched = await db.get_data(['chat_id', 'name'], [str(msg.chat.id), result[1]])
             if fetched != []:
-                # 0 is id, 1 is chat_id, 2 is tagname, 3 is content
-                # 4 is document_id or others
                 return await msg.reply(fetched[0][3], True)
             
     except pyrogram.errors.FloodWait as e:
@@ -140,7 +186,7 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
     except pyrogram.errors.ChatAdminRequired as e:
         return await msg.reply("Aku perlu menjadi admin untuk melakukan itu :)", True)
     except pyrogram.errors.ChatWriteForbidden:
-        pass
+        print("I'm muted :)")
     except UnicodeDecodeError:
         pass
     except:
@@ -149,8 +195,4 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
         return await bot.send_message(owner[0], traceback.format_exc(), parse_mode=None)
     
 
-try:
-    pyrogram.idle()
-except KeyboardInterrupt:
-    pass
-bot.stop()
+bot.run()
