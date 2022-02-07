@@ -1,1 +1,0 @@
-from callback import indomie_callback, kick_callback
