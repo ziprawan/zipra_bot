@@ -1,6 +1,6 @@
 from funcs import *
 
 commands = {
-    'start': start.main, 'dbg': dbg.main, 'ping': ping.main,
-    'help': help.main
+    'start': start, 'dbg': dbg, 'ping': ping,
+    'help': help, 
 }

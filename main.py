@@ -47,7 +47,7 @@ async def message_handler(event: Message):
         command = await parser.get_command()
 
         if command in commands:
-            return await commands[command](
+            return await commands[command].main(
                 event, parser, me, owner
             )
         else:

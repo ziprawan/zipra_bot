@@ -1,12 +1,12 @@
 from typing import Optional
 
 class Parser:
-    def __init__(self, username, text):
-        self.uname = username
+    def __init__(self, username: str, text: str):
+        self.uname = username.lower()
         self.text = text
         self.prefix = ['/', '!', '$', '\\']
     
-    async def get_command(self, lower=True):
+    async def get_command(self, lower:bool=True):
         teks: str = self.text # Example /start@examplebot
         if teks == None:
             return None
@@ -26,7 +26,7 @@ class Parser:
                 if not lower:
                     return split_by_tag[0]
                 return split_by_tag[0].lower()
-            if split_by_tag[1] == uname or split_by_tag[1] == '':
+            if split_by_tag[1].lower() == uname or split_by_tag[1] == '':
                 if not lower:
                     return split_by_tag[0]
                 return split_by_tag[0].lower() # Return 'json'
