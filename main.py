@@ -53,7 +53,7 @@ async def message_handler(event: Message):
         else:
             return False
     except Exception as e:
-        return await errors_handler(e, event)
+        return await errors_handler(e, event, traceback.format_exc())
 
 logging.info("Program Executed!")
 with client:

@@ -11,7 +11,7 @@ env = os.environ
 api_id = env.get("API_ID", None)
 api_hash = env.get("API_HASH", None)
 bot_token = env.get("BOT_TOKEN", None)
-owner = env.get("OWNER", None)
+owner = int(env.get("OWNER", None))
 
 if bot_token == "" or bot_token == None:
     raise ValueError("Your Bot Token cannot be empty or None.")
