@@ -15,4 +15,33 @@ def add_surrogate(text):
     )
 
 def get_length(text):
+    """Count Length of text with surrogate addition"""
     return len(add_surrogate(text))
+
+def ol_generator(text: str, var: list, res: list):
+    """My helper for offset and length generator for formatting_entities"""
+    offsets = []
+    lengths = []
+    if isinstance(var, list) and isinstance(res, list):
+        if len(var) != len(res):
+            return None
+        
+        for i in range(len(var)):
+            var[i] = '{' + var[i] + '}'
+
+        for i in res:
+            lengths.append(get_length(str(i)))
+        
+        for j in range(len(lengths)):
+            tmp = text.find(var[j])
+            if j != 0:
+                add, subtract = 0, 0
+                for k in range(j):
+                    add += get_length(str(res[k]))
+                    subtract += len(var[k])
+                tmp += add - subtract
+            offsets.append(tmp)
+        
+        return offsets, lengths
+    else:
+        return None
