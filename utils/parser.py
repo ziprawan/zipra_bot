@@ -1,4 +1,18 @@
-from typing import Optional
+class CallbackParser:
+    def __init__(self, text: str):
+        if not isinstance(text, str):
+            raise TypeError(f"We need 'str' type. Not {type(text)}!")
+        # Ex. pin_1234567890_loud
+        self.splitted = text.split('_', 2) # ['pin', '1234567890', 'loud']
+    
+    def get_command(self):
+        return self.splitted[0]
+    
+    def get_user(self):
+        return self.splitted[1]
+    
+    def get_options(self):
+        return self.splitted[2]
 
 class Parser:
     def __init__(self, username: str, text: str):
