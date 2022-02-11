@@ -2,14 +2,20 @@
 <strings>
     <messages>
         <string name="non_private_error">Maaf, guna di bual peribadi!</string>
-	    <string name="start_message_private">Hi {name}, my name is {bot_name}!\n\nI'm developed by @Pra210906. I hope I can manage your needs in group 😊\n\nFor help you can type /help</string>
-	    <string name="response_time">⌛️ Response time: </string>
+	    <string name="start_message_private">Hai {name}, nama saya {bot_name}!\n\nSaya dibangunkan oleh @Pra210906. Saya harap saya boleh uruskan keperluan anda dalam grup 😊\n\nUntuk pertolongan anda boleh taip /help</string>
+	    <string name="response_time">⌛️ Masa tindak balas: </string>
         <string name="me_not_admin">Malangnya, saya bukan admin di sini :(</string>
-        <string name="help_message">Hello {name}!\n\nI'm {bot_name} and i developed by @Pra210906.\nIf you found any bugs, just report to him :)\n\nPowered by Telethon {version}</string>
+        <string name="help_message">Helo {name}!\n\nSaya {bot_name} dan saya dibangunkan oleh @Pra210906.\nJika anda temui sebarang pepijat, hanya laporkan kepadanya :)\n\nDikuasakan oleh Telethon {version}</string>
+        <string name="admin_error">You do not have admin privileges!</string>
+        <string name="change_lang_success">Successfully changed the language to: {lang_name}</string>
     </messages>
-    <buttons>
-        <string name="click_here">Tekan Sini!</string>
+    <misc>
+        <string name="click_here">Click Here!</string>
         <string name="back">Back</string>
         <string name="home">Home</string>
-    </buttons>
+        <string name="about_me">About Me</string>
+        <string name="usage">Usage</string>
+        <string name="privacy_policy">Privacy Policy</string>
+        <string name="admin_error">Oof, you are not admin</string>
+    </misc>
 </strings>

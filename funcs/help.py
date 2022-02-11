@@ -1,11 +1,12 @@
 from utils.lang import Language
-from utils.helper import get_length, ol_generator
+from utils.helper import ol_generator
 from telethon import __version__
 from telethon.tl.custom.message import Message
 from telethon.tl.types import (
     InputMessageEntityMentionName,
     InputUser,
     InputUserSelf,
+    KeyboardButtonCallback,
     KeyboardButtonRow,
     KeyboardButtonUrl,
     MessageEntityCode,
@@ -68,5 +69,16 @@ async def main(*args):
                     offset = offs[2],
                     length = lens[2],
                 )
-            ]
+            ],
+            buttons = ReplyInlineMarkup(
+                rows = [KeyboardButtonRow(
+                    buttons = [KeyboardButtonCallback(
+                        text = "About Me",
+                        data = b'about_me'
+                    ),
+                    KeyboardButtonCallback(
+                        text = ""
+                    )]
+                )]
+            )
         )

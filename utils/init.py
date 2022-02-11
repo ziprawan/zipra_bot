@@ -13,6 +13,14 @@ api_hash = env.get("API_HASH", None)
 bot_token = env.get("BOT_TOKEN", None)
 owner = int(env.get("OWNER", None))
 
+supported_lang = {
+    'id': 'Indonesia',
+    'en': 'English',
+    'ar': 'Arabic',
+    'ja': 'Japan',
+    'ms': 'Malay'
+}
+
 if bot_token == "" or bot_token == None:
     raise ValueError("Your Bot Token cannot be empty or None.")
 

@@ -1,5 +1,7 @@
 class CallbackParser:
-    def __init__(self, text: str):
+    def __init__(self, text: str|bytes):
+        if isinstance(text, bytes):
+            text = text.decode()
         if not isinstance(text, str):
             raise TypeError(f"We need 'str' type. Not {type(text)}!")
         # Ex. pin_1234567890_loud
