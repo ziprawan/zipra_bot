@@ -16,15 +16,15 @@ After filling required field, run it using ```python3 main.py```
 
 # Contributing
 
-## By reporting bug
+### By reporting bug
 
 If you found any bugs, report it to [@ridhwan_aziz](https://t.me/ridhwan_aziz)
 
-## By contributing fixes
+### By contributing fixes
 
 If you can help me to fix my code or making my code better, just fork this source code, edit, then go pull request :D
 
-## By translating
+### By translating
 
 Interested with translating this project? Or my english is weird? Go to [crowdin](https://crwd.in/zipra_bot) to translate or fixing grammar of this project :)
 
