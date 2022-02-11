@@ -2,15 +2,15 @@
 Source code of @ridhwan_aziz's bot in telegram
 
 # Requirements
-- Have Python3 (Version >= 3.7)
+- Have Python 3 (Version >= 3.7)
 - Python3 pip
-- Installed requirements (You can see at requirements.txt)
+- Installed requirements (You can see at requirements.txt). You can install it by using command ```pip(3) install -Ur requirements.txt```
 
 # Running
 Rename config.env to .env and fill all required field
 
 - ```api_id``` or ```api_hash``` from (my.telegram.org)
-- ```bot_token``` from t.me/BotFather
+- ```bot_token``` from [Bot Father](https://t.me/BotFather)
 
 After filling required field, run it using ```python3 main.py```
 
