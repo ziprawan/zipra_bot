@@ -24,7 +24,13 @@ async def main(*args):
             return await event.edit("Internal error")
         successful_msg = await lang.get('change_lang_success')
         offs, lens = ol_generator(successful_msg, ['lang_name'], [supported_lang[lang_code]])
-        db.exec("INSERT INTO lang (chat_id, lang_code) VALUES (?, ?)", (chat_id, lang_code,))
+        db.exec("SELECT lang_code FROM lang WHERE chat_id = ?", (chat_id,))
+        p = db.cur.fetchall()
+        if p == []:
+            db.exec("INSERT INTO lang (chat_id, lang_code) VALUES (?, ?)", (chat_id, lang_code,))
+        else:
+            db.exec("UPDATE lang SET lang_code = ? WHERE chat_id = ?", (lang_code, chat_id,))
+        
         db.commit()
         return await event.edit(
             successful_msg.format(
