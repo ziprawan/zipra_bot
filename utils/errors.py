@@ -13,6 +13,6 @@ async def errors_handler(error, event: Message, traceback):
         return await event.reply((await lang.get("me_not_admin")))
     else:
         await event.respond(f"Something went wrong\n\n`{str(error)}`\n\nPlease report it to @Pra210906")
-        return await event.client.send_message(owner, str(traceback))
+        return await event.client.send_message(owner, str(traceback), parse_mode=None)
 
     
