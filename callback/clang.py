@@ -1,5 +1,3 @@
-from multiprocessing import Event
-from tabnanny import check
 from telethon.events.callbackquery import CallbackQuery
 from telethon.tl.types import MessageEntityCode
 from utils.helper import check_admin, ol_generator, Database
@@ -19,7 +17,7 @@ async def main(*args):
         )
     else:
         chat_id = event.chat_id
-        lang_code = parser.get_options()
+        lang_code = await parser.get_options()
         if lang_code not in supported_lang:
             return await event.edit("Internal error")
         successful_msg = await lang.get('change_lang_success')
