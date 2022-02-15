@@ -6,16 +6,18 @@
 	    <string name="response_time">⌛️ Masa tindak balas: </string>
         <string name="me_not_admin">Malangnya, saya bukan admin di sini :(</string>
         <string name="help_message">Helo {name}!\n\nSaya {bot_name} dan saya dibangunkan oleh @Pra210906.\nJika anda temui sebarang pepijat, hanya laporkan kepadanya :)\n\nDikuasakan oleh Telethon {version}</string>
-        <string name="admin_error">You do not have admin privileges!</string>
-        <string name="change_lang_success">Successfully changed the language to: {lang_name}</string>
+        <string name="admin_error">Anda tiada keistimewaan admin!</string>
+        <string name="change_lang_success">Berjaya menukar bahasa ke: {lang_name}</string>
+        <string name="privacy_and_terms"> DASAR PRIVASI\n\nDengan menggunakan perkhidmatan kami, anda telah percaya maklumat anda kepada kami. Kami benar-benar melindungi maklumat anda.\n\nKami mengumpul maklumat berikut secara automatik:\n- Nama awal dan akhir, nama dan id pengguna\n- Tajuk bual, pautan nama pengguna/bual, bual/grup id\n\nMaklumat ini disimpan dalam pangkalan data.\n\nSemua pilihan bual anda (seperti bahasa, afk, nota) juga disimpan dalam pangkalan data.\nKami tak akan melihat pangkalan data melainkan permintaan daripada pemilik bual.\n\nKami tak akan rakam apa-apa mesej diterima oleh robot. Kami tidak memasang pengelog dalam sebarang bentuk, sama ada bot dijemput ke grup, bot ditendang, mesej diterima atau dipadamkan, dan sebagainya\n\nApabila ralat berlaku, bot secara ringkasnya menghantar surih balik ralat kepada kami. Bots do not provide us with your information in any form.\n\nTERMS\n\nBy using our service, you must meet the following requirements\n\n• Make the best use of bots.\n• Agree with our privacy policy.\n• Don't use bots to:\na. Spam\nb. Save content 18+\nc. Saying hate to others\nd. Violence\n\nIf caught violating these requirements, we will immediately take action in the form of:\n• Block bots from entering the group/chat\n• Report the group/chat to Telegram\n\nRegards, Dev\nAziz\n\nPrivacy and Terms are subject to change.\nLast modified on 14 February 2022</string>
+        <string name="about_me">Info bot\nID: {id}\nNama: {name}\nNama pengguna: {uname}\n\nInfo pemilik\nID: {oid}\nNama: {oname}\nNama pengguna: {ouname}</string>
     </messages>
     <misc>
-        <string name="click_here">Click Here!</string>
-        <string name="back">Back</string>
-        <string name="home">Home</string>
-        <string name="about_me">About Me</string>
-        <string name="usage">Usage</string>
-        <string name="privacy_policy">Privacy Policy</string>
-        <string name="admin_error">Oof, you are not admin</string>
+        <string name="click_here">Tekan Sini!</string>
+        <string name="back">Kembali</string>
+        <string name="home">Rumah</string>
+        <string name="about_me">Tentang Saya</string>
+        <string name="usage">Penggunaan</string>
+        <string name="privacy_terms">Privasi &amp; Terma</string>
+        <string name="admin_error">Oof, anda bukan admin</string>
     </misc>
 </strings>
