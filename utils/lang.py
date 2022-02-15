@@ -27,7 +27,6 @@ class Language:
                 self.lang_code = lang
             else:
                 self.lang_code = 'en'
-        self.msg = msg
     
     async def get(self, string_name: str, is_misc: bool = False) -> str or None:
         # Check types
@@ -58,4 +57,4 @@ class Language:
         if string_name in lang_data:
             return lang_data[string_name].replace(r"\n", "\n")
         else:
-            return None
+            return "null"

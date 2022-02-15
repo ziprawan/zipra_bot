@@ -7,13 +7,13 @@ class CallbackParser:
         # Ex. pin_1234567890_loud
         self.splitted = text.split('_', 2) # ['pin', '1234567890', 'loud']
     
-    def get_command(self):
+    async def get_command(self):
         return self.splitted[0]
     
-    def get_user(self):
+    async def get_user(self):
         return self.splitted[1]
     
-    def get_options(self):
+    async def get_options(self):
         return self.splitted[2]
 
 class Parser:
