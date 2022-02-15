@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(format="%(asctime)s - %(message)s", level=10)
 logging.info("Importing modules...")
 
-import telethon, traceback
+import telethon, traceback, time
 
 if telethon.__version__ != '1.25.1':
     raise ValueError("We need telethon 1.25.1 :)")
@@ -14,9 +14,15 @@ from utils.init import *
 from utils.commands import commands, callbacks
 from utils.parser import CallbackParser, Parser
 from utils.errors import errors_handler
+from utils.chat_action import chat_action
 from telethon.sync import events
 from telethon.tl.custom.message import Message
 from telethon.events.callbackquery import CallbackQuery
+
+# Chat Action handler. Like user join/left, chat title changed, etc. (Service Message)
+@client.on(events.ChatAction)
+async def chat_action_handler(event: events.ChatAction.Event):
+    return await chat_action(event)
 
 # Message handler
 
@@ -29,7 +35,7 @@ async def callback_query_handler(event: CallbackQuery.Event):
 
         parser = CallbackParser(event.data)
 
-        cmd = parser.get_command()
+        cmd = await parser.get_command()
 
         if cmd in callbacks:
             return await callbacks[cmd].main(
