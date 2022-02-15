@@ -1,1 +1,1 @@
-from funcs import dbg, start, ping, help, lang
+from funcs import dbg, start, ping, help, lang, execc, bans

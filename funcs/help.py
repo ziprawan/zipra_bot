@@ -73,11 +73,17 @@ async def main(*args):
             buttons = ReplyInlineMarkup(
                 rows = [KeyboardButtonRow(
                     buttons = [KeyboardButtonCallback(
-                        text = "About Me",
-                        data = b'about_me'
+                        text = await lang.get('about_me', True),
+                        data = f'help_{sender.id}_about'.encode()
                     ),
                     KeyboardButtonCallback(
-                        text = ""
+                        text = await lang.get('usage', True),
+                        data = f'help_{sender.id}_usage'.encode()
+                    )]
+                ), KeyboardButtonRow(
+                    buttons = [KeyboardButtonCallback(
+                        text = await lang.get('privacy_terms', True),
+                        data = f'help_{sender.id}_pnt'.encode()
                     )]
                 )]
             )
