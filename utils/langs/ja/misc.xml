@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<resources>
+    <!-- Miscellaneous -->
+    <!-- Normal -->
+    <string name="click_here">Click Here!</string>
+    <string name="back">Back</string>
+    <string name="home">Home</string>
+    <string name="about_me">About Me</string>
+    <string name="usage">Usage</string>
+    <string name="privacy_terms">Privacy &amp; Terms</string>
+
+    <!-- Errors -->
+    <string name="admin_error">Oof, you are not admin</string>
+</resources>
