@@ -7,8 +7,8 @@ logging.info("Importing modules...")
 
 import telethon, traceback, time
 
-if telethon.__version__ != '1.25.1':
-    raise ValueError("We need telethon 1.25.1 :)")
+if telethon.__version__ != '1.24.0':
+    raise ValueError("Install telethon 1.24.0")
 
 from utils.init import *
 from utils.commands import commands, callbacks
