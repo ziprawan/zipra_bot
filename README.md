@@ -16,9 +16,9 @@ After filling required field, run it using ```python3 main.py```
 
 # Contributing
 
-### By reporting bug
+### By reporting bug or requesting feature
 
-If you found any bugs, report it to [@ridhwan_aziz](https://t.me/ridhwan_aziz)
+If you found any bugs or requesting feature, report it to [@ridhwan_aziz](https://t.me/ridhwan_aziz) or add to issues page
 
 ### By contributing fixes
 
