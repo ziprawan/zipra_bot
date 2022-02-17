@@ -30,4 +30,4 @@ Interested with translating this project? Or my english is weird? Go to [crowdin
 
 # Donate
 
-Currently I have no place to donate :(
+Currently only [saweria](https://saweria.co/ridhwanaziz)
