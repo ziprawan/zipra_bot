@@ -11,7 +11,7 @@ class Language:
 
         self.db = db
         self.msg = msg
-    
+
     async def get(self, string_name: str, is_misc: bool = False) -> str or None:
         # Check types
         if not isinstance(string_name, str) or not isinstance(is_misc, bool):
@@ -31,7 +31,7 @@ class Language:
         db.exec("SELECT lang_code FROM lang WHERE chat_id = ?", (chat_id,))
         fetched = db.cur.fetchall()
         if fetched == []:
-            self.lang_code = 'en'
+            lang_code = 'en'
         else:
             lang = fetched[0][0]
             if lang in supported_lang:
@@ -46,13 +46,13 @@ class Language:
             file = f'utils/langs/{lang}/misc.xml'
         else:
             file = f'utils/langs/{lang}/messages.xml'
-        
+
         if not os.path.exists(file):
             raise FileNotFoundError("Language file not found!")
 
         parsed = ElementTree.parse(file)
         root = parsed.getroot()
-        
+
         lang_data = {}
         for i in root:
             if i.tag == 'string':

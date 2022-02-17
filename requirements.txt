@@ -1,5 +1,5 @@
 # Important Requirements
 
-Telethon==1.24.0
+https://github.com/New-dev0/Telethon/archive/Artifact.zip
 cryptg
 python-dotenv
