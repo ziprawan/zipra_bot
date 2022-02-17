@@ -19,6 +19,7 @@ from telethon.sync import events
 from telethon.tl.custom.message import Message
 from telethon.events.callbackquery import CallbackQuery
 
+# Test
 # Chat Action handler. Like user join/left, chat title changed, etc. (Service Message)
 @client.on(events.ChatAction)
 async def chat_action_handler(event: events.ChatAction.Event):
