@@ -1,32 +1,32 @@
 # ---------- Import needed libs ----------
-import sqlite3
 import struct
 from telethon.tl.custom.message import Message
-from telethon import functions, types
+from telethon import TelegramClient, functions, types
 
 # ---------- Classes ----------
-class Database:
-    def __init__(self, database):
-        db_path = f'databases/{database}'
-        self.db = sqlite3.connect(db_path)
-        self.cur = self.db.cursor()
-        self.exec = self.cur.execute
-        self.commit = self.db.commit
+class Default(dict):
+    def __missing__(self, key):
+        return '{'+key+'}'
 
 # ---------- Async functions ----------
 
-async def check_admin(event: Message):
+async def check_admin(event: Message, chat: types.TypeInputChannel = None, user: types.TypeInputPeer = None):
     """My helper to detect he's admin or not.
     If in private, just return True, because no admin in private chat"""
     if event.is_private:
         return True
+    
+    if isinstance(user, types.InputChannel):
+        # Incase if user is channel
+        return False
 
-    chat = await event.get_chat()
-    sender = (await event.get_sender())
+    chat = await event.get_chat() if chat is None else chat
+    user = await event.get_sender() if user is None else user
+    
     try:
         result: types.channels.ChannelParticipant = await event.client(functions.channels.GetParticipantRequest(
             channel = chat,
-            participant = sender
+            participant = user
         ))
         
         if isinstance(result.participant, (types.ChannelParticipantAdmin, types.ChannelParticipantCreator)):
@@ -35,6 +35,21 @@ async def check_admin(event: Message):
             return False
     except Exception as e:
         return await event.respond(f"Error while retreiving admin info.\n\n{str(e)}")
+
+async def send_sticker(client: TelegramClient, peer: types.TypeInputPeer, sticker_id: int, access_hash: int, file_reference: bytes, messages: str = None, silent: bool|None = None):
+    """My helper to simplify send sticker process :)"""
+    return await client(functions.messages.SendMediaRequest(
+        peer = peer,
+        media = types.InputMediaDocument(
+            id = types.InputDocument(
+                id = sticker_id,
+                access_hash = access_hash,
+                file_reference = file_reference
+            )
+        ),
+        message = messages,
+        silent = silent
+    ))
 
 # ---------- End async functions ----------
 # ---------- Sync functions ----------
