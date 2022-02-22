@@ -1,6 +1,7 @@
 from telethon.events.callbackquery import CallbackQuery
 from telethon.tl.types import MessageEntityCode
-from utils.helper import check_admin, ol_generator, Database
+from utils.helper import check_admin, ol_generator
+from utils.database import MyDatabase
 from utils.lang import Language, supported_lang
 
 async def main(*args):
@@ -8,7 +9,7 @@ async def main(*args):
     parser = args[1]
     is_admin = await check_admin(event)
     lang = Language(event)
-    db = Database('groups.db')
+    db = MyDatabase('groups.db')
 
     if not is_admin:
         return await event.answer(
@@ -22,14 +23,13 @@ async def main(*args):
             return await event.edit("Internal error")
         successful_msg = await lang.get('change_lang_success')
         offs, lens = ol_generator(successful_msg, ['lang_name'], [supported_lang[lang_code]])
-        db.exec("SELECT lang_code FROM lang WHERE chat_id = ?", (chat_id,))
-        p = db.cur.fetchall()
-        if p == []:
-            db.exec("INSERT INTO lang (chat_id, lang_code) VALUES (?, ?)", (chat_id, lang_code,))
+        fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
+        if fetched == []:
+            await db.exec("INSERT INTO lang (chat_id, lang_code) VALUES (%d, %s)" % (chat_id, MyDatabase.format(lang_code)))
         else:
-            db.exec("UPDATE lang SET lang_code = ? WHERE chat_id = ?", (lang_code, chat_id,))
+            command = "UPDATE lang SET lang_code = %s WHERE chat_id = %d;" % (MyDatabase.format(lang_code), chat_id)
+            await db.exec(command)
         
-        db.commit()
         return await event.edit(
             successful_msg.format(
                 lang_name = supported_lang[lang_code]

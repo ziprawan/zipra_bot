@@ -1,4 +1,5 @@
-from utils.helper import Database, check_admin, ol_generator
+from utils.database import MyDatabase
+from utils.helper import check_admin, ol_generator
 from utils.init import supported_lang
 from utils.lang import Language
 from telethon.tl.types import (
@@ -17,9 +18,9 @@ async def main(*args):
         return await event.reply(await lang.get('admin_error'))
 
     chat_id = event.chat_id
-    db = Database('groups.db')
+    db = MyDatabase('groups.db')
 
-    db.exec("""
+    await db.exec("""
     CREATE TABLE IF NOT EXISTS lang (
         id integer PRIMARY KEY,
         chat_id integer NOT NULL,
@@ -27,7 +28,7 @@ async def main(*args):
     )
     """)
     
-    db.exec("SELECT lang_code FROM lang WHERE chat_id = ?", (chat_id,))
+    fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
 
     rows = []
     buttons = []
@@ -47,7 +48,6 @@ async def main(*args):
     if buttons != []:
         rows.append(KeyboardButtonRow(buttons))
 
-    fetched = db.cur.fetchall()
     if fetched == []:
         await event.reply(
             "Current lang is en\nSelect language:",
@@ -55,14 +55,13 @@ async def main(*args):
         )
     else:
         msg = "Current lang is: {lang_name}\nSelect language:"
-        detected_lang = fetched[0][0]
+        detected_lang = fetched[0]['lang_code']
         if detected_lang not in supported_lang:
             lang_name = "not supported"
         else:
             lang_name = supported_lang[detected_lang]
 
         offs, lens = ol_generator(msg, ['lang_name'], [lang_name])
-        print(offs, lens)
         entities = MessageEntityCode(offs[0], lens[0])
         
         await event.reply(

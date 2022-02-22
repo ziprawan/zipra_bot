@@ -9,10 +9,16 @@
     <string name="change_lang_dialog"></string>
     <string name="privacy_and_terms">PRIVACY POLICY\n\nBy using our services, you have entrusted your information to us. We will absolutely protect your information.\n\nWe automatically collect the following information:\n- First and last name, username, and user id\n- Chat title, username/chat link, chat/group id\n\nThe information is stored in the database.\nAll your chat preferences (like language, afk, notes) are also stored in the database.\nWe will not see the database unless there is a request from the chat owner.\n\nWe will not record any messages received by bots. We do not install loggers in any form, whether bots are invited to groups, bots are kicked, messages are received or deleted, and so on.\n\nWhen an error occurs, the bot simply sends us an error traceback. Bots do not provide us with your information in any form.\n\nTERMS\n\nBy using our service, you must meet the following requirements\n\n• Make the best use of bots.\n• Agree with our privacy policy.\n• Don't use bots to:\na. Spam\nb. Save content 18+\nc. Saying hate to others\nd. Violence\n\nIf caught violating these requirements, we will immediately take action in the form of:\n• Block bots from entering the group/chat\n• Report the group/chat to Telegram\n\nRegards, Dev\nAziz\n\nPrivacy and Terms are subject to change.\nLast modified on 14 February 2022</string>
     <string name="about_me">Bot info\nID: {id}\nName: {name}\nUsername: {uname}\n\nOwner info\nID: {oid}\nName: {oname}\nUsername: {ouname}</string>
+    <string name="banned">{name} has been banned!</string>
+    <string name="reason">Reason: {reason}</string>
 
     <!-- Error messages -->
     <string name="non_private_error">Sorry, use it from private chat!</string>
     <string name="me_not_admin">Unfortunately, i'm not admin in here :(</string>
     <string name="admin_error">You do not have admin privileges!</string>
+    <string name="not_replied">Reply to user for me to {action}</string>
+    <string name="private_error">Don't use it on private chat!</string>
+    <string name="user_not_found_error">🛑 User not found error!</string>
+    <string name="ban_admin_error">I am cannot {action} admin</string>
 
 </resources>

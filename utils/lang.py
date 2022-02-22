@@ -1,13 +1,13 @@
 from telethon.tl.custom.message import Message
-from utils.helper import Database
+from utils.database import MyDatabase
 from utils.init import supported_lang
 import xml.etree.ElementTree as ElementTree
-import os
+import os, asyncio
 
 class Language:
     def __init__(self, msg: Message):
         # Declare variables
-        db = Database('groups.db')
+        db = MyDatabase('groups.db')
 
         self.db = db
         self.msg = msg
@@ -20,7 +20,7 @@ class Language:
         db = self.db
         msg = self.msg
 
-        db.exec("""
+        await db.exec("""
         CREATE TABLE IF NOT EXISTS lang (
             id integer PRIMARY KEY,
             chat_id integer NOT NULL,
@@ -28,12 +28,11 @@ class Language:
         )
         """)
         chat_id = msg.chat_id
-        db.exec("SELECT lang_code FROM lang WHERE chat_id = ?", (chat_id,))
-        fetched = db.cur.fetchall()
+        fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
         if fetched == []:
             lang_code = 'en'
         else:
-            lang = fetched[0][0]
+            lang = fetched[0]['lang_code']
             if lang in supported_lang:
                 lang_code = lang
             else:
