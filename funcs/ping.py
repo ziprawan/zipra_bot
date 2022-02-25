@@ -12,7 +12,7 @@ async def main(*args):
     answer = await event.reply(resp_text)
 
     now = time()
-    msg_time = datetime.timestamp(answer.date)
+    msg_time = datetime.timestamp(event.date)
     resp_time = round((now - msg_time) * 1000, 3)
     
     resp_text += "\n" + await lang.get('response_time')

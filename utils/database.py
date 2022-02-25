@@ -8,7 +8,6 @@ class MyDatabase:
     async def exec(self, cmd):
         PIPE = asyncio.subprocess.PIPE
         command = f'sqlite3 {self.path} ".mode json" "{cmd}"'
-        print(command)
         executed = await asyncio.subprocess.create_subprocess_shell(command, True, PIPE, PIPE)
         stdout, stderr = await executed.communicate()
         if stderr != b'':
