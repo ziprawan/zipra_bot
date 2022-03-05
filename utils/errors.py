@@ -1,11 +1,9 @@
-import asyncio
+import asyncio, time
 from telethon.tl.custom.message import Message
-from telethon.tl.types import MessageEntityTextUrl
 from utils.init import owner
 from telethon import errors
 from utils.lang import Language
 from io import BytesIO
-import time
 
 async def errors_handler(error, event: Message, traceback):
     lang = Language(event)
@@ -22,4 +20,4 @@ async def errors_handler(error, event: Message, traceback):
         await event.respond(f"Something went wrong\n\n`{str(error)}`\n\nPlease report it to @Pra210906")
         with BytesIO(str.encode(str(traceback))) as out:
             out.name = f"{error.__class__.__name__}_{round(time.time())}.txt"
-            return await event.respond(file=out)
+            return await event.client.send_message(owner, error.args[0], file=out)
