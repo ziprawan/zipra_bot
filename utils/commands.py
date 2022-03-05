@@ -3,7 +3,8 @@ from callback import *
 
 commands = {
     'start': start, 'dbg': dbg, 'ping': ping,
-    'help': help, 'setlang': lang, 'eval': execc, 'ban': bans
+    'help': help, 'setlang': lang, 'eval': my_eval, 'ban': bans,
+    'unban': bans
 }
 
 callbacks = {

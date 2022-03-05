@@ -10,6 +10,7 @@
     <string name="about_me">Bot info\nID: {id}\nName: {name}\nUsername: {uname}\n\nOwner info\nID: {oid}\nName: {oname}\nUsername: {ouname}</string>
     <string name="banned">{name} has been banned!</string>
     <string name="reason">Reason: {reason}</string>
+    <string name="unbanned">Ok, {name} can join again :)</string>
     <!-- Error messages -->
     <string name="non_private_error">Sorry, use it from private chat!</string>
     <string name="me_not_admin">Unfortunately, i\'m not admin in here :(</string>
