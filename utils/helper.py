@@ -19,6 +19,13 @@ async def check_admin(event: Message, chat: types.TypeInputChannel = None, user:
         return False
 
 async def check_perm(event: Message, perm: str, chat: types.TypeChat|None = None, user: types.TypePeer|None = None):
+    permissions = await get_perm(event, chat, user)
+    if perm in permissions:
+        return permissions[perm]
+    else:
+        raise KeyError("Permission not found")
+
+async def get_perm(event: Message, chat: types.TypeChat|None = None, user: types.TypePeer|None = None):
     # RAISE ERROR IF CHAT TYPE IS PRIVATE
     if event.is_private:
         raise TypeError("There is no permission in private chat")
@@ -76,7 +83,7 @@ async def check_perm(event: Message, perm: str, chat: types.TypeChat|None = None
         permissions['anonymous'] = user_perm.anonymous
         permissions['manage_call'] = user_perm.manage_call
         permissions['other'] = user_perm.other
-        permissions['view_maaages'] = True
+        permissions['view_messages'] = True
         permissions['send_games'] = True
         permissions['send_gifs'] = True
         permissions['send_inline'] = True
@@ -103,10 +110,7 @@ async def check_perm(event: Message, perm: str, chat: types.TypeChat|None = None
         permissions['invite_users'] = user_perm.invite_users
         permissions['pin_messages'] = user_perm.pin_messages
     
-    if perm in permissions:
-        return permissions[perm]
-    else:
-        raise KeyError("Permission not found")
+    return permissions
 
 async def check_status(event: Message, chat: types.TypeInputChannel = None, user: types.TypeInputPeer = None):
     """My helper to check_status of sender.
@@ -154,28 +158,6 @@ async def check_status(event: Message, chat: types.TypeInputChannel = None, user
                 return "channel"
             else:
                 return "anonch"
-
-async def get_perm(event: Message, chat: types.TypeInputChannel = None, user: types.TypeInputPeer = None, status: str = None):
-    chat = await event.get_chat() if chat is None else chat
-    user = await event.get_sender() if user is None else user
-    status = await check_status(event, chat, user) if status is None else status
-    if status in ['channel', 'anonch', 'anonym', 'private']:
-        return None
-
-    participant: types.channels.ChannelParticipant = await event.client(functions.channels.GetParticipantRequest(
-        channel = chat,
-        participant = user
-    ))
-
-    if status in ['admin', 'creator']:
-        return participant.participant.admin_rights
-    elif status == "member":
-        chat: types.Channel = await event.get_chat()
-        return chat.default_banned_rights
-    elif status == "restricted":
-        return participant.participant.banned_rights
-    else:
-        return None
 
 async def get_user(event: Message, user: str|int):
     full_user: types.UserFull =  await event.client(functions.users.GetFullUserRequest(
