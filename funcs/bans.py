@@ -211,8 +211,6 @@ async def main(*args):
     replied = await event.get_reply_message()
     if replied:
         user = await replied.get_sender()
-        if user.id == 1158320907:
-            return await event.reply("Access denied")
         reason = param if param == None else param.split()
     else:
         if param:
