@@ -11,6 +11,7 @@ from telethon.tl.types import (
     InputUser,
     MessageEntityCode,
     TypePeer,
+    User,
     InputPeerSelf
 )
 
@@ -129,14 +130,24 @@ async def ban(event: Message, lang: Language, user: str|int|list[str|int], reaso
         if result == True:
             msg = await lang.get('banned')
             var = ['name']
-            res = [user.first_name]
+            entity = await event.client.get_entity(user)
+            print(type(entity))
+            res = [entity.first_name if isinstance(entity, User) else entity.title]
             offs, lens = ol_generator(msg, var, res)
             msg = msg.format(name=res[0])
-            entities = [InputMessageEntityMentionName(offset=offs[0], length=lens[0], user_id=InputUser(user_id=user.id, access_hash=user.access_hash))]
+            entities = [InputMessageEntityMentionName(offset=offs[0], length=lens[0], user_id=InputUser(user_id=entity.id, access_hash=entity.access_hash))]
         else:
             msg = await lang.get('restrict_admin_error')
             msg = msg.format(action=inspect.stack()[0].function)
             entities = []
+        await send_sticker(
+            event.client, 
+            chat, 
+            6080049489123476920, 
+            -8737819976689190729, 
+            b'\x02_U\xfe\x0e\x00\x00M\xb5b\x0b4\xf3\xbd\xebR\xa9\xf1<=\xac\x94nt\xebG\xe2\x08\xa9',
+            "Hahahaha, got banned!",
+            False)
         return await event.respond(msg, formatting_entities=entities)
         
 
