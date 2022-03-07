@@ -1,6 +1,9 @@
 # Zipra Bot
 Source code of @ridhwan_aziz's bot in telegram
 
+# Credits thanks
+Go to this [page](./CREDITS.md)
+
 # Requirements
 - Have Python 3 (Version >= 3.7)
 - Python3 pip
