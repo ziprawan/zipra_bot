@@ -10,7 +10,8 @@ from telethon.tl.types import (
     InputMessageEntityMentionName,
     InputUser,
     MessageEntityCode,
-    TypePeer
+    TypePeer,
+    InputPeerSelf
 )
 
 # async def ban(event: Message, lang: Language, user: TypePeer|List[TypePeer], reason: str):
@@ -182,8 +183,19 @@ async def main(*args):
     param: str = await parser.get_options()
     cmd = await parser.get_command()
     can_ban_user = await check_perm(event, 'ban_users')
+    i_can_ban = await check_perm(event, 'ban_users', user=InputPeerSelf())
 
     # Check permissions
+    if not i_can_ban:
+        msg = await lang.get('i_missing_perms')
+        offs, lens = ol_generator(msg, ['perm'], ['ban_users'])
+        return await event.reply(
+            msg.format_map(Default(perm="ban_users")),
+            formatting_entities = [MessageEntityCode(
+                offset = offs[0],
+                length = lens[0]
+            )]
+        )
     if not can_ban_user:
         msg = await lang.get('missing_perms')
         offs, lens = ol_generator(msg, ['perm'], ['ban_users'])
