@@ -38,3 +38,6 @@ class MyDatabase:
         
         new_text += p
         return new_text
+    
+    def stringify(text: str):
+        return format(text)

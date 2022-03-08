@@ -2,7 +2,7 @@ from telethon.tl.custom.message import Message
 from utils.database import MyDatabase
 from utils.init import supported_lang
 import xml.etree.ElementTree as ElementTree
-import os, asyncio
+import os
 
 class Language:
     def __init__(self, msg: Message):

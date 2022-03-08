@@ -6,12 +6,13 @@ Credit thanks
 - Muhammad, our prophet, who has given guidance in worshiping Allah.
 - My parents, who gave birth to me, and looked after and raised me from childhood.
 - Teacher, who has taught me how to read and write, so that I can make this project.
-- Friends & Friends, who have motivated me.
+- Developer of library that i use for this project. Thanks for your great library!
+- Friendships & Friends, who have motivated me.
 - Telegram Friends, who have helped me in improving and helping in this project
 
 ### Telegram friend
 - [@fadhil_riyanto](https://t.me/fadhil_riyanto) (Helper)
 - [@hanifdwyputra](https://t.me/hanifdwyputra) (Helper)
 - [@butthx](https://t.me/butthx) (Helper)
-- [@mashujan](https://t.me/mashujan) (Translator Indonesia)
+- [@mashujan](https://t.me/mashujan) (Translator Indonesian)
 - [@jjd_malaysia](https://t.me/jjd_malaysia) (Translator Malaysian)

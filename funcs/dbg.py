@@ -2,7 +2,6 @@ import aiofiles, os
 from utils.helper import get_length
 from telethon.tl.custom.message import Message
 from telethon.tl.types import MessageEntityCode
-from telethon.extensions.markdown import add_surrogate, del_surrogate
 
 async def main(*args):
     event: Message = args[0]
