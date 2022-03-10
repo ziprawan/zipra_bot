@@ -16,3 +16,11 @@ Credit thanks
 - [@butthx](https://t.me/butthx) (Helper)
 - [@mashujan](https://t.me/mashujan) (Translator Indonesian)
 - [@jjd_malaysia](https://t.me/jjd_malaysia) (Translator Malaysian)
+
+### Groups
+- [Telegram Bot Indonesia](https://t.me/botindonesia)
+- [Telethon Chat](https://t.me/TelethonChat)
+- [Telethon Indonesia](https://t.me/telethon_id)
+- [Tgdev Indoensia](https://t.me/tgdev_id)
+- [cOretan sCript](https://t.me/cScript)
+- [Zipra Dev Support Group](https://t.me/zipradevgroup) & [Zipra Dev Channel](https://t.me/zipradevupdates)

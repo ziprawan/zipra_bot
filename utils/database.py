@@ -7,20 +7,35 @@ class MyDatabase:
         self.path = f'databases/{database}'
     async def exec(self, cmd):
         PIPE = asyncio.subprocess.PIPE
-        command = f'sqlite3 {self.path} ".mode json" "{cmd}"'
+        command = f'sqlite3 {self.path} ".mode list" ".header on" "{cmd}"'
         executed = await asyncio.subprocess.create_subprocess_shell(command, True, PIPE, PIPE)
         stdout, stderr = await executed.communicate()
         if stderr != b'':
             raise DatabaseExecutorError(f"Error while executing sqlite command.\nError: {stderr.decode()}")
         return stdout.decode()
     async def get_data(self, cmd):
-        out = await self.exec(cmd) # Example output: '[{1, "data1", "Text1"},\n{2, "data2", "Text2"}]\n'
-        replaced = out.replace('\n', '') # Now should be: '[{1, "data1", "Text1"},{2, "data2", "Text2"}]'
-        try:
-            converted_to_list = ast.literal_eval(replaced) # Now type is list and iterable
-        except SyntaxError:
-            return [] # In case stdout is ''
-        return converted_to_list
+        out = await self.exec(cmd)
+        get_data_result = []
+
+        splitted_by_newline = out.splitlines()
+        var_names = splitted_by_newline[0].split("|") 
+        print(var_names)
+        splitted_by_newline.pop(0) 
+        splitted_by_newline.pop(-1) 
+
+        if splitted_by_newline == []:
+            print(1)
+            return splitted_by_newline
+
+        for splitted in splitted_by_newline:
+            splitted_by_vertical_bar = splitted.split("|")
+            tmp = {}
+            for i in range(len(var_names)):
+                tmp[var_names[i]] = splitted_by_vertical_bar[i]
+
+            get_data_result.append(tmp)
+
+        return get_data_result
     
     @staticmethod
     def format(text: str):
@@ -39,5 +54,6 @@ class MyDatabase:
         new_text += p
         return new_text
     
+    @staticmethod
     def stringify(text: str):
         return format(text)
