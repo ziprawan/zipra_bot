@@ -18,11 +18,13 @@ class MyDatabase:
         get_data_result = []
 
         splitted_by_newline = out.splitlines()
+        print(splitted_by_newline)
         var_names = splitted_by_newline[0].split("|") 
         print(var_names)
         splitted_by_newline.pop(0) 
-        splitted_by_newline.pop(-1) 
-
+        if splitted_by_newline[-1] == '':
+            splitted_by_newline.pop(-1) 
+        print(splitted_by_newline)
         if splitted_by_newline == []:
             print(1)
             return splitted_by_newline
