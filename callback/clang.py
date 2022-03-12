@@ -21,7 +21,7 @@ async def main(*args):
         lang_code = await parser.get_options()
         if lang_code not in supported_lang:
             return await event.edit("Internal error")
-        successful_msg = await lang.get('change_lang_success')
+        
         offs, lens = ol_generator(successful_msg, ['lang_name'], [supported_lang[lang_code]])
         fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
         if fetched == []:
@@ -29,6 +29,8 @@ async def main(*args):
         else:
             command = "UPDATE lang SET lang_code = %s WHERE chat_id = %d;" % (MyDatabase.format(lang_code), chat_id)
             await db.exec(command)
+
+        successful_msg = await lang.get('change_lang_success')
         
         return await event.edit(
             successful_msg.format(
