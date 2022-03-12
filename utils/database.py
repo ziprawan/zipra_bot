@@ -1,5 +1,4 @@
-import asyncio, ast
-from pkgutil import get_data
+import asyncio
 
 class DatabaseExecutorError(BaseException): ...
 
