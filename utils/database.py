@@ -1,4 +1,5 @@
 import asyncio, ast
+from pkgutil import get_data
 
 class DatabaseExecutorError(BaseException): ...
 
@@ -14,19 +15,22 @@ class MyDatabase:
             raise DatabaseExecutorError(f"Error while executing sqlite command.\nError: {stderr.decode()}")
         return stdout.decode()
     async def get_data(self, cmd):
+
         out = await self.exec(cmd)
         get_data_result = []
 
         splitted_by_newline = out.splitlines()
-        print(splitted_by_newline)
+
+        if splitted_by_newline == []:
+            return get_data_result
+        
         var_names = splitted_by_newline[0].split("|") 
-        print(var_names)
         splitted_by_newline.pop(0) 
+
         if splitted_by_newline[-1] == '':
             splitted_by_newline.pop(-1) 
-        print(splitted_by_newline)
+
         if splitted_by_newline == []:
-            print(1)
             return splitted_by_newline
 
         for splitted in splitted_by_newline:

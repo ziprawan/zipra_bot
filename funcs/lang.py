@@ -49,23 +49,22 @@ async def main(*args):
         rows.append(KeyboardButtonRow(buttons))
 
     if fetched == []:
-        await event.reply(
-            "Current lang is en\nSelect language:",
-            buttons = ReplyInlineMarkup(rows)
-        )
+        lang_name = supported_lang['en']
     else:
-        msg = "Current lang is: {lang_name}\nSelect language:"
         detected_lang = fetched[0]['lang_code']
+
         if detected_lang not in supported_lang:
             lang_name = "not supported"
         else:
             lang_name = supported_lang[detected_lang]
 
-        offs, lens = ol_generator(msg, ['lang_name'], [lang_name])
-        entities = MessageEntityCode(offs[0], lens[0])
-        
-        await event.reply(
-            msg.format(lang_name = lang_name),
-            buttons = ReplyInlineMarkup(rows),
-            formatting_entities = [entities]
-        )
+    msg = "Current lang is: {lang_name}\nSelect language:"
+
+    offs, lens = ol_generator(msg, ['lang_name'], [lang_name])
+    entities = MessageEntityCode(offs[0], lens[0])
+    
+    await event.reply(
+        msg.format(lang_name = lang_name),
+        buttons = ReplyInlineMarkup(rows),
+        formatting_entities = [entities]
+    )
