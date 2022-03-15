@@ -1,7 +1,3 @@
-from click import command
-from more_itertools import strip
-
-
 class CallbackParser:
     def __init__(self, text: str|bytes):
         if isinstance(text, bytes):

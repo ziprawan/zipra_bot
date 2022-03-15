@@ -1,3 +1,4 @@
+import logging
 from telethon.events.callbackquery import CallbackQuery
 from utils.helper import ol_generator
 from utils.init import owner
@@ -14,6 +15,7 @@ from telethon.tl.types import (
 from utils.lang import Language
 
 async def main(*args):
+    logging.debug("[HelpCallback] Setting up variables")
     event: CallbackQuery.Event = args[0]
     parser = args[1]
     lang = Language(event)
@@ -21,10 +23,13 @@ async def main(*args):
     me = await event.client.get_me()
     owner_info = await event.client.get_entity(owner)
 
-    param = await parser.get_options()
+    logging.debug("[HelpCallback] Parsing arguments")
+    param = await parser.get_args()
     entities = []
+    logging.debug("[HelpCallback] Found arguments: %s" % param)
 
     if param == "home":
+        logging.debug("[HelpCallback] Home page")
         help_message = await lang.get("help_message")
         version = f"v{__version__}"
 
@@ -33,6 +38,7 @@ async def main(*args):
         results = [sender.first_name, me.first_name, version]
         offs, lens = ol_generator(help_message, variables, results)
 
+        logging.debug("[HelpCallback] Edit help message")
         return await event.edit(
             help_message.format(
                 name = sender.first_name,
@@ -77,8 +83,10 @@ async def main(*args):
             )
         )
     elif param == "pnt":
+        logging.debug("[HelpCallback] Getting message of privacy and terms")
         msg = await lang.get('privacy_and_terms')
     elif param == 'about':
+        logging.debug("[HelpCallback] Getting message of about")
         msg = await lang.get('about_me')
         msg = msg.format(
             id = me.id,
@@ -89,8 +97,10 @@ async def main(*args):
             ouname = f'@{owner_info.username}'
         )
     elif param == 'usage':
+        logging.debug("[HelpCallback] Getting message of usage")
         msg = "None"
 
+    logging.debug("[HelpCallback] Editing message")
     await event.edit(
         msg,
         parse_mode = None,
