@@ -1,1 +1,0 @@
-from funcs.other import scope, debugmode

@@ -13,7 +13,7 @@ from telethon.tl.types import (
 async def chat_action(event: events.ChatAction.Event):
     print(event)
     msg = event.action_message
-    if isinstance(msg.action, (MessageActionChatAddUser, MessageActionChatJoinedByLink, MessageActionChatJoinedByRequest)):
+    if isinstance(msg.action, MessageActionChatAddUser):
         joined_users = msg.action.users
         added_by = msg.from_id.user_id
         me = await event.client.get_me()

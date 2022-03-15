@@ -6,6 +6,7 @@
     <string name="help_message">Hello {name}!\n\nI\'m {bot_name} and i developed by @Pra210906.\nIf you found any bugs, just report to him :)\n\nPowered by Telethon {version}</string>
     <string name="change_lang_success">Successfully changed the language to: {lang_name}</string>
     <string name="change_lang_dialog"></string>
+    <string name="privacy_and_terms">Read https://t.me/zipradevupdates/58</string>
     <string name="about_me">Bot info\nID: {id}\nName: {name}\nUsername: {uname}\n\nOwner info\nID: {oid}\nName: {oname}\nUsername: {ouname}</string>
     <string name="banned">{name} has been banned!</string>
     <string name="reason">Reason: {reason}</string>

@@ -1,5 +1,6 @@
-import inspect
-from utils.database import MyDatabase
+from multiprocessing.sharedctypes import Value
+from typing import List
+import time, inspect
 from utils.helper import Default, check_perm, get_user, ol_generator, send_sticker
 from utils.lang import Language
 from telethon.tl.custom.message import Message
@@ -125,12 +126,7 @@ async def unban(event: Message, lang: Language, user: str|int|list[str|int], rea
         return await event.respond(msg, formatting_entities=entities)
 
 async def nban(event: Message, lang: Language, user: TypePeer, reason: str):
-    chat = await event.get_chat()
-    entities = []
-    error_msg = ""
-    db = MyDatabase()
-
-    db.exec
+    pass
 
 async def main(*args):
     event: Message = args[0]
@@ -141,7 +137,7 @@ async def main(*args):
         return await event.reply(await lang.get('private_error'))
 
     parser = args[1]
-    param: str = await parser.get_args()
+    param: str = await parser.get_options()
     cmd = await parser.get_command()
     can_ban_user = await check_perm(event, 'ban_users')
     i_can_ban = await check_perm(event, 'ban_users', user=InputPeerSelf())

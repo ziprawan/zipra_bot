@@ -12,12 +12,6 @@ api_id = env.get("API_ID", None)
 api_hash = env.get("API_HASH", None)
 bot_token = env.get("BOT_TOKEN", None)
 owner = int(env.get("OWNER", None))
-debug = str(env.get("DEBUG", None)).lower()
-
-if debug in ["true", "yes", "enabled", 'y']:
-    debug = True
-else:
-    debug = False
 
 supported_lang = {
     'id': 'Indonesia',
@@ -32,7 +26,7 @@ if bot_token == "" or bot_token == None:
 
 # End read .env
 # Initialize client
-client = TelegramClient("mybot", api_id, api_hash, request_retries=10,connection_retries=10).start(bot_token=bot_token)
+client = TelegramClient("mybot", api_id, api_hash).start(bot_token=bot_token)
 
 with client:
     me = client.get_me()
