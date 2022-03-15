@@ -1,3 +1,7 @@
+from click import command
+from more_itertools import strip
+
+
 class CallbackParser:
     def __init__(self, text: str|bytes):
         if isinstance(text, bytes):
@@ -22,52 +26,72 @@ class Parser:
         self.text = text
         self.prefix = ['/', '!', '$', '\\']
     
-    async def get_command(self, lower:bool=True):
-        teks: str = self.text # Example /start@examplebot
-        if teks == None:
+    async def get_command(self, return_bot_command: bool = False):
+        text: str = self.text # Example: /start@test_bot args
+        if text == None:
             return None
-        uname = self.uname # examplebot
-        prefix = self.prefix # Ada $ / dan ! dll
-        if teks[0] in prefix:
-            if '\n' in teks:
-                splitted = teks.split("\n", 1)
+        username = self.uname
+        prefix = self.prefix
+        if text[0] in prefix:
+            if '\n' in text:
+                splitted = text.splitlines()
                 if ' ' in splitted[0]:
-                    splitted = teks.split(' ', 1)
+                    splitted = splitted[0].split()
             else:
-                splitted = teks.split(' ', 1)
-            split_by_space = splitted
-            split_by_prefix = split_by_space[0].split(teks[0]) # '' dan json@zipra_bot
-            split_by_tag = split_by_prefix[1].split('@') # json dan zipra_bot
-            if len(split_by_tag) == 1:
-                if not lower:
-                    return split_by_tag[0]
-                return split_by_tag[0].lower()
-            if split_by_tag[1].lower() == uname or split_by_tag[1] == '':
-                if not lower:
-                    return split_by_tag[0]
-                return split_by_tag[0].lower() # Return 'json'
-
-    async def get_options(self):
-        tujuan = await self.get_command(False)
-        pesan = self.text
-        if pesan == None or tujuan == None:
+                splitted = text.split()
+            
+            command = splitted[0]
+            splitted_with_prefix = command.split(command[0])
+            if '@' in command:
+                cmd_splitted = splitted_with_prefix[1].split('@')
+                if cmd_splitted[1].lower() == username.lower():
+                    if return_bot_command:
+                        return command
+                    else:
+                        actual_cmd = cmd_splitted[0]
+                        return actual_cmd.lower()
+                else:
+                    return None
+            else:
+                if return_bot_command:
+                    return command
+                else:
+                    return splitted_with_prefix[1]
+        else:
             return None
-        uname = self.uname
-        tmp = pesan.replace(pesan[0]+tujuan, '', 1)
-        split_space = pesan.split('\n') if tmp[:1] == '\n' else pesan.split(' ')
-        if len(split_space) <= 1:
+
+    async def get_args(self):
+        text = self.text
+        command = await self.get_command(True)
+        if text == None or command == None:
             return None
         else:
-            for i in self.prefix:
-                if i == pesan[0]:
-                    perintah = split_space[0].split(i)
-                    if type(tujuan) == str:
-                        tujuan_by_uname = f'{tujuan}@{uname}'
-                        if perintah[1] == tujuan or perintah[1] == tujuan_by_uname:
-                            hmm = pesan.replace(split_space[0], '', 1)
-                            args = hmm.replace('\n', '', 1) if hmm[:1] == '\n' else hmm.replace(' ', '', 1)
-                            return args
-                        else:
-                            return None
-                    else:
-                        return None
+            replaced = text.replace(command, '')
+            stripped = replaced.strip()
+            if stripped == '':
+                return None
+            else:
+                return stripped
+# Tests
+if __name__ == '__main__':
+    import asyncio
+    text_to_test = [
+        "/start",
+        "/start@Ziprathon_bot",
+        "/StArt@ZiPrAthON_BoT",
+        "/start@other_bot",
+        "/start Hello ngabs",
+        "/start@Ziprathon_bot This is args",
+        "/StArt@ZiPrAthON_BoT args too",
+        "/start\nArgs in newline",
+        "/start@Ziprathon_bot\nYahahahah",
+        "/StArt@ZiPrAthON_BoT\nWahyu wahyu"
+    ]
+    uname = "Ziprathon_bot"
+    for text in text_to_test:
+        # print("==========")
+        parser = Parser(uname, text)
+        cmd = asyncio.run(parser.get_command())
+        args = asyncio.run(parser.get_args())
+        print(f"Text: {text}\nCommand: {cmd}\nArgs: {args}")
+        print("==========")
