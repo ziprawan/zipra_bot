@@ -1,3 +1,4 @@
+import logging
 from utils.lang import Language
 from utils.parser import Parser
 from telethon.tl.custom.message import Message
@@ -9,6 +10,7 @@ from telethon.tl.types import (
 )
 
 async def main(*args):
+    logging.debug("[StartHandler] ")
     event: Message = args[0]
     parsed = args[1]
     me: User = args[2]

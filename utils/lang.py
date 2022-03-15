@@ -1,8 +1,7 @@
 from telethon.tl.custom.message import Message
 from utils.database import MyDatabase
 from utils.init import supported_lang
-import xml.etree.ElementTree as ElementTree
-import os
+import xml.etree.ElementTree as ElementTree, os, logging
 
 class Language:
     def __init__(self, msg: Message):
@@ -20,13 +19,7 @@ class Language:
         db = self.db
         msg = self.msg
 
-        await db.exec("""
-        CREATE TABLE IF NOT EXISTS lang (
-            id integer PRIMARY KEY,
-            chat_id integer NOT NULL,
-            lang_code text(5)
-        )
-        """)
+        await db.exec("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
         chat_id = msg.chat_id
         fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
         if fetched == []:
