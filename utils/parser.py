@@ -52,7 +52,7 @@ class Parser:
                 if return_bot_command:
                     return command
                 else:
-                    return splitted_with_prefix[1]
+                    return splitted_with_prefix[1].lower()
         else:
             return None
 
