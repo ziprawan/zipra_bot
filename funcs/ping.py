@@ -8,9 +8,7 @@ async def main(*args):
     logging.debug("[PingHandler] Sending message")
     event: Message = args[0]
     lang = Language(event)
-
     resp_text = "🏓 PONG!"
-    answer = await event.reply(resp_text)
 
     logging.debug("[PingHandler] Getting response time")
     now = time.time()
@@ -24,8 +22,8 @@ async def main(*args):
     resp_text += str(resp_time) + " ms"
     length = len(str(resp_time) + " ms")
 
-    logging.debug("[PingHandler] Editing message with response time")
-    return await answer.edit(
+    logging.debug("[PingHandler] Sending message with response time")
+    return await event.reply(
         resp_text,
         formatting_entities = [MessageEntityCode(
             offset = offset,
