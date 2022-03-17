@@ -18,7 +18,7 @@ async def main(*args):
     sender = await event.get_sender()
     lang = Language(event)
 
-    params = await parsed.get_options()
+    params = await parsed.get_args()
     prsr = Parser(me.username, f'/{params}')
     cmd = await prsr.get_command()
     link_arg = cmd if params else 'start'
