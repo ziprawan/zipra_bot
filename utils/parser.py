@@ -13,7 +13,7 @@ class CallbackParser:
     async def get_user(self):
         return self.splitted[1]
     
-    async def get_options(self):
+    async def get_args(self):
         return self.splitted[2]
 
 class Parser:
