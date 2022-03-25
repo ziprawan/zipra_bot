@@ -3,6 +3,22 @@ from utils.database import MyDatabase
 from utils.init import supported_lang
 import xml.etree.ElementTree as ElementTree, os, logging
 
+msg_lang_root = {}
+misc_lang_root = {}
+
+for lang in supported_lang:
+    misc_file = f'utils/langs/{lang}/misc.xml'
+    msg_file = f'utils/langs/{lang}/messages.xml'
+
+    if not os.path.exists(misc_file) or not os.path.exists(msg_file):
+        logging.error(f'[LangHandler] Missing language files for {lang}')
+        raise FileNotFoundError('Language data missing!')
+
+    misc_root = ElementTree.parse(misc_file).getroot()
+    msg_root = ElementTree.parse(msg_file).getroot()
+    msg_lang_root[lang] = msg_root
+    misc_lang_root[lang] = misc_root
+
 class Language:
     def __init__(self, msg: Message):
         # Declare variables
@@ -31,19 +47,11 @@ class Language:
             else:
                 lang_code = 'en'
 
-        lang = lang_code
-
         # Read lang file
         if is_misc:
-            file = f'utils/langs/{lang}/misc.xml'
+            root = misc_lang_root[lang_code]
         else:
-            file = f'utils/langs/{lang}/messages.xml'
-
-        if not os.path.exists(file):
-            raise FileNotFoundError("Language file not found!")
-
-        parsed = ElementTree.parse(file)
-        root = parsed.getroot()
+            root = msg_lang_root[lang_code]
 
         lang_data = {}
         for i in root:

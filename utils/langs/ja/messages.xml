@@ -6,7 +6,6 @@
     <string name="help_message">Hello {name}!\n\nI\'m {bot_name} and i developed by @Pra210906.\nIf you found any bugs, just report to him :)\n\nPowered by Telethon {version}</string>
     <string name="change_lang_success">Successfully changed the language to: {lang_name}</string>
     <string name="change_lang_dialog"></string>
-    <string name="privacy_and_terms">Read https://t.me/zipradevupdates/58</string>
     <string name="about_me">Bot info\nID: {id}\nName: {name}\nUsername: {uname}\n\nOwner info\nID: {oid}\nName: {oname}\nUsername: {ouname}</string>
     <string name="banned">{name} has been banned!</string>
     <string name="reason">Reason: {reason}</string>
@@ -20,5 +19,8 @@
     <string name="private_error">Don\'t use it on private chat!</string>
     <string name="user_not_found_error">🛑 User not found error!</string>
     <string name="restrict_admin_error">I am cannot {action} admin</string>
-    <string name="missing_perms">You're missing this permission:\n{perm}</string>
+    <string name="missing_perms">You\'re missing this permission:\n{perm}</string>
+    <string name="i_missing_perms">I\'m missing this permission:\n{perm}</string>
+    <string name="unhandled_error">⚠️ Unhandled error: {error}\n\nPlease report it to my owner!</string>
+    <string name="no_code">No code provided!</string>
 </resources>
