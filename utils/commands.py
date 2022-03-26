@@ -1,64 +1,52 @@
 class Parser:
-    def __init__(self, username, text):
-        self.uname = username
+    def __init__(self, username: str, text: str):
+        self.uname = username.lower()
         self.text = text
         self.prefix = ['/', '!', '$', '\\']
-    async def get_options(self, tujuan):
-        pesan = self.text
-        if pesan == None or tujuan == None:
+    
+    async def get_command(self, return_bot_command: bool = False):
+        text: str = self.text # Example: /start@test_bot args
+        if text == None:
             return None
-        uname = self.uname
-        tmp = pesan.replace(pesan[0]+tujuan, '', 1)
-        split_space = pesan.split('\n') if tmp[:1] == '\n' else pesan.split(' ')
-        if len(split_space) <= 1:
+        username = self.uname
+        prefix = self.prefix
+        if text[0] in prefix:
+            if '\n' in text:
+                splitted = text.splitlines()
+                if ' ' in splitted[0]:
+                    splitted = splitted[0].split()
+            else:
+                splitted = text.split()
+            
+            command = splitted[0]
+            splitted_with_prefix = command.split(command[0])
+            if '@' in command:
+                cmd_splitted = splitted_with_prefix[1].split('@')
+                if cmd_splitted[1].lower() == username.lower():
+                    if return_bot_command:
+                        return command
+                    else:
+                        actual_cmd = cmd_splitted[0]
+                        return actual_cmd.lower()
+                else:
+                    return None
+            else:
+                if return_bot_command:
+                    return command
+                else:
+                    return splitted_with_prefix[1].lower()
+        else:
+            return None
+
+    async def get_args(self):
+        text = self.text
+        command = await self.get_command(True)
+        if text == None or command == None:
             return None
         else:
-            for i in self.prefix:
-                if i == pesan[0]:
-                    perintah = split_space[0].split(i)
-                    if type(tujuan) == list:
-                        for j in tujuan:
-                            tujuan_by_uname = f'{j}@{uname}'
-                            if perintah[1] == j or perintah[1] == tujuan_by_uname:
-                                hmm = pesan.replace(split_space[0], '', 1)
-                                args = hmm.replace('\n', '', 1) if hmm[:1] == '\n' else hmm.replace(' ', '', 1)
-                                return args
-                        return None
-                    elif type(tujuan) == str:
-                        tujuan_by_uname = f'{tujuan}@{uname}'
-                        if perintah[1] == tujuan or perintah[1] == tujuan_by_uname:
-                            hmm = pesan.replace(split_space[0], '', 1)
-                            args = hmm.replace('\n', '', 1) if hmm[:1] == '\n' else hmm.replace(' ', '', 1)
-                            return args
-                        else:
-                            return None
-                    else:
-                        return None
-    
-    async def get_command(self):
-        teks: str = self.text # Misalkan /json@zipra_bot tes
-        if teks == None:
-            return None
-        uname = self.uname # zipra_bot
-        prefix = self.prefix # Ada $ / dan ! dll
-        if teks[0] in prefix:
-            if '\n' in teks:
-                splitted = teks.split("\n", 1)
-                if ' ' in splitted[0]:
-                    splitted = teks.split(' ', 1)
+            replaced = text.replace(command, '')
+            stripped = replaced.strip()
+            if stripped == '':
+                return None
             else:
-                splitted = teks.split(' ', 1)
-            split_by_space = splitted
-            split_by_prefix = split_by_space[0].split(teks[0]) # '' dan json@zipra_bot
-            split_by_tag = split_by_prefix[1].split('@') # json dan zipra_bot
-            if len(split_by_tag) == 1:
-                return split_by_tag[0]
-            if split_by_tag[1] == uname or split_by_tag[1] == '':
-                return split_by_tag[0] # Return 'json'
-
-
-# Just for testing purposes
-if __name__ == '__main__':
-    parse = Parser('zipra_bot', '/json@zipra_bot /json@ziprabot lah kok wkwkwk')
-    print(parse.extract_command('json'))
-    print(parse.get_command())
+                return stripped
