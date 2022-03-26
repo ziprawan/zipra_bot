@@ -1,4 +1,5 @@
-from pyrogram.types import Message
+from pyrogram.types import Message, MessageEntity
+from utils.helper import get_length as len
 import aiohttp, configparser
 
 langs = {
@@ -84,8 +85,19 @@ async def main(msg: Message, cmd, args):
                     message = stdout
                 else:
                     message = "```No Output!```"
+                
+                message = message.strip()
                 if len(message) < 4096:
-                    return await msg.reply(message, True, parse_mode=None)
+                    return await msg.reply(
+                        text = message,
+                        quote = True,
+                        parse_mode = None,
+                        entities = [MessageEntity(
+                            type = 'code',
+                            offset = 0,
+                            length = len(message)
+                        )]
+                    )
                 else:
                     filename = f"zipra.{langs[cmd]}.txt"
                     with open(filename, 'w') as file:
