@@ -177,8 +177,7 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
     except UnicodeDecodeError:
         pass
     except:
-        await msg.reply("Terjadi kesalahan", True)
-        await bot.send_message(owner[0], f"Terjadi kesalahan. <a href=\"https://t.me/c/{str(msg.chat.id).split('-100')[1]}/{msg.message_id}\">TKJ</a>")
+        await msg.reply("Terjadi kesalahan. Please report it to @ridhwan_aziz", True)
         return await bot.send_message(owner[0], traceback.format_exc(), parse_mode=None)
     
 
