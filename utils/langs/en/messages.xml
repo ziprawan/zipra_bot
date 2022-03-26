@@ -13,13 +13,13 @@
     <string name="restrict_batch">{action} result:\n\nSucessful: {success} user(s)\nFailed: {failed} user(s)</string>
     <!-- Error messages -->
     <string name="non_private_error">Sorry, use it from private chat!</string>
-    <string name="me_not_admin">Unfortunately, i\'m not admin in here :(</string>
+    <string name="me_not_admin">Unfortunately, i'm not admin in here :(</string>
     <string name="admin_error">You do not have admin privileges!</string>
     <string name="not_replied">Reply to user for me to {action}</string>
     <string name="private_error">Don\'t use it on private chat!</string>
     <string name="user_not_found_error">🛑 User not found error!</string>
     <string name="restrict_admin_error">I am cannot {action} admin</string>
-    <string name="missing_perms">You\'re missing this permission:\n{perm}</string>
+    <string name="missing_perms">You're missing this permission:\n{perm}</string>
     <string name="i_missing_perms">I\'m missing this permission:\n{perm}</string>
     <string name="unhandled_error">⚠️ Unhandled error: {error}\n\nPlease report it to my owner!</string>
     <string name="no_code">No code provided!</string>

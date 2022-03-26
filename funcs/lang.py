@@ -18,8 +18,13 @@ async def main(*args):
     sender: User = await event.get_sender()
 
     if not event.is_private and not (await check_perm(event, 'change_info')):
-        logging.info("[LangHandler] User is not admin. Aborting")
-        return await event.reply(await lang.get('admin_error'))
+        logging.info("[LangHandler] User doesn't have change_info permission. Aborting")
+        msg = await lang.get('missing_perms')
+        var = ['perm']
+        res = ['change_info']
+        offs, lens = ol_generator(msg, var, res)
+        entities = [MessageEntityCode(offset = offs[0], length = lens[0])]
+        return await event.reply(msg.format(perm=res[0]), formatting_entities = entities)
 
     logging.debug("[LangHandler] Creating buttons")
     rows = []

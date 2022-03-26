@@ -1,3 +1,6 @@
+import time
+from types import NoneType
+from telethon import TelegramClient
 from telethon.sync import events
 from telethon.tl.types import (
     MessageActionChatAddUser,
@@ -7,17 +10,46 @@ from telethon.tl.types import (
     MessageActionChatJoinedByRequest,
     MessageActionChatEditPhoto,
     MessageActionChatEditTitle,
-    MessageActionChatJoinedByLink
+    MessageActionChatJoinedByLink,
+    UpdateBotChatInviteRequester,
+    MessageService
 )
 
 async def chat_action(event: events.ChatAction.Event):
-    print(event)
-    msg = event.action_message
-    if isinstance(msg.action, (MessageActionChatAddUser, MessageActionChatJoinedByLink, MessageActionChatJoinedByRequest, MessageActionChatJoinedByRequest)):
-        joined_users = msg.action.users
-        added_by = msg.from_id.user_id
-        me = await event.client.get_me()
-        if me.id in joined_users:
-            return await event.respond("Hemlo there, I'm Pratama Bot Beta!\nThank you for using me :)\n\nSource code: https://github.com/ridhwan-aziz/zipra_bot/tree/telethon")
-        else:
-            return await event.respond(f"Hi {joined_users}. Added by: {added_by}")
+    """
+    Chat Action handler
+    """
+    client: TelegramClient = event._client
+    action = event.action_message
+    update = event.original_update
+
+    if isinstance(action, NoneType) and isinstance(update, UpdateBotChatInviteRequester):
+        user = await client.get_entity(update.user_id)
+        first_name = user.first_name
+        last_name = user.last_name
+        full_name = first_name + f" {last_name}" if last_name else first_name
+        user_id = user.id
+        access_hash = user.access_hash
+    elif action == None:
+        print(event)
+    elif isinstance(action.action, MessageActionChatAddUser):
+        users = (await client.get_entity(user) for user in action.action.users)
+        first_name = (user.first_name for user in users)
+        last_name = (user.last_name for user in users)
+        user_id = (user.id for user in users)
+        access_hash = (user.access_hash for user in users)
+        full_name = first_name + f" {last_name}" if last_name else first_name
+    elif isinstance(action.action, MessageActionChatJoinedByLink):
+        user = await client.get_entity(action.from_id.user_id)
+        first_name = user.first_name
+        last_name = user.last_name
+        full_name = first_name + f" {last_name}" if last_name else first_name
+        user_id = user.id
+        access_hash = user.access_hash
+    
+    print(first_name)
+    print(last_name)
+    print(user_id)
+    print(access_hash)
+    print(full_name)
+    await event.respond(f"Hello [{full_name}](tg://user?id={user_id}), welcome to my chat!")

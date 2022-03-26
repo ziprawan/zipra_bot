@@ -1,22 +1,24 @@
-import sys, io, traceback, logging
+import sys, io, traceback, logging, subprocess
 from telethon.tl.custom.message import Message
-from utils.helper import get_length
+from utils.helper import get_length, send_sticker
 from utils.init import owner
+from utils.lang import Language
 
 async def main(*args):
     logging.debug("[EvalHandler] Setting up variables")
     event: Message = args[0]
     parser = args[1]
+    lang = Language(event)
 
     code = await parser.get_args()
 
 
     if (await event.get_sender()).id != owner:
         logging.info("[EvalHandler] The sender is my owner. Aborting")
-        return None
+        return
     elif code == None:
         logging.debug("[EvalHandler] Code not found. Aborting")
-        return await event.respond("No code...")
+        return await event.respond(await lang.get('no_code'))
 
     old_stderr = sys.stderr
     old_stdout = sys.stdout

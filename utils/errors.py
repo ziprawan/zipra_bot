@@ -1,9 +1,17 @@
 import asyncio, time, logging
-from telethon.tl.custom.message import Message
-from utils.init import owner
-from telethon import errors
-from utils.lang import Language
 from io import BytesIO
+from telethon import errors
+from telethon.tl.custom.message import Message
+from telethon.tl.types import (
+    KeyboardButtonRow,
+    KeyboardButtonUserProfile,
+    InputKeyboardButtonUserProfile,
+    MessageEntityCode,
+    ReplyInlineMarkup,
+)
+from utils.helper import ol_generator
+from utils.init import owner
+from utils.lang import Language
 
 async def errors_handler(error: Exception, event: Message, traceback):
     logging.warn("[ErrorHandler] Error Type: %s" % error.__class__.__name__)
@@ -23,7 +31,25 @@ async def errors_handler(error: Exception, event: Message, traceback):
     elif isinstance(error, errors.MessageIdInvalidError):
         pass
     else:
-        await event.respond(f"Something went wrong\n\n`{str(error)}`\n\nPlease report it to @Pra210906")
+        input_owner = await event.client.get_input_entity(owner)
+        msg = await lang.get('unhandled_error')
+        var = ['error']
+        res = [str(error)]
+        offs, lens = ol_generator(msg, var, res)
+        entities = [MessageEntityCode(offs[0], lens[0])]
+        msg = msg.format(error = str(error))
+        await event.respond(
+            msg,
+            formatting_entities = entities,
+            buttons = ReplyInlineMarkup([
+                KeyboardButtonRow([
+                    InputKeyboardButtonUserProfile(
+                        text = await lang.get('contact_us', True),
+                        user_id = input_owner
+                    )
+                ])
+            ])
+        )
         with BytesIO(str.encode(str(traceback))) as out:
             out.name = f"{error.__class__.__name__}_{round(time.time())}.txt"
             return await event.client.send_message(owner, error.args[0], file=out)

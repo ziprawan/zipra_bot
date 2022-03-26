@@ -97,18 +97,18 @@ async def get_perm(event: Message, chat: types.TypeChat|None = None, user: types
             user_perm = participant.banned_rights
         else:
             user_perm = chat.default_banned_rights
-        permissions['view_maaages'] = user_perm.view_messages
-        permissions['send_games'] = user_perm.send_games
-        permissions['send_gifs'] = user_perm.send_gifs
-        permissions['send_inline'] = user_perm.send_inline
-        permissions['send_media'] = user_perm.send_media
-        permissions['send_polls'] = user_perm.send_polls
-        permissions['send_stickers'] = user_perm.send_stickers
-        permissions['send_messages'] = user_perm.send_messages
-        permissions['embed_links'] = user_perm.embed_links
-        permissions['change_info'] = user_perm.change_info
-        permissions['invite_users'] = user_perm.invite_users
-        permissions['pin_messages'] = user_perm.pin_messages
+        permissions['view_messages'] = not user_perm.view_messages
+        permissions['send_games'] = not user_perm.send_games
+        permissions['send_gifs'] = not user_perm.send_gifs
+        permissions['send_inline'] = not user_perm.send_inline
+        permissions['send_media'] = not user_perm.send_media
+        permissions['send_polls'] = not user_perm.send_polls
+        permissions['send_stickers'] = not user_perm.send_stickers
+        permissions['send_messages'] = not user_perm.send_messages
+        permissions['embed_links'] = not user_perm.embed_links
+        permissions['change_info'] = not user_perm.change_info
+        permissions['invite_users'] = not user_perm.invite_users
+        permissions['pin_messages'] = not user_perm.pin_messages
     
     return permissions
 
@@ -221,7 +221,7 @@ def ol_generator(text: str, var: list, res: list):
                 add, subtract = 0, 0
                 for k in range(j):
                     add += get_length(str(res[k]))
-                    subtract += len(var[k])
+                    subtract += get_length(var[k])
                 tmp += add - subtract
             offsets.append(tmp)
         

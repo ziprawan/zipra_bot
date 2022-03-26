@@ -1,7 +1,7 @@
 import logging
 from telethon.events.callbackquery import CallbackQuery
 from telethon.tl.types import MessageEntityCode
-from utils.helper import check_admin, ol_generator
+from utils.helper import check_perm, ol_generator
 from utils.database import MyDatabase
 from utils.lang import Language, supported_lang
 
@@ -9,14 +9,14 @@ async def main(*args):
     logging.debug("[LangCallback] Called. Setting up variables")
     event: CallbackQuery.Event = args[0]
     parser = args[1]
-    is_admin = await check_admin(event)
+    can_change_info = await check_perm(event, 'change_info')
     lang = Language(event)
     db = MyDatabase('groups.db')
 
-    if not is_admin:
-        logging.debug("[LangCallback] User is not admin")
+    if not can_change_info:
+        logging.debug("[LangCallback] User doesn't have change_info permission")
         return await event.answer(
-            message = await lang.get('admin_error', True),
+            message = (await lang.get('missing_perms', True)).format(perm='change_info'),
             alert = True
         )
     else:
