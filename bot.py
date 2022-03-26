@@ -56,7 +56,7 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
         parser = commands.Parser(me.username, msg.data)
         # print(msg.data)
         command = await parser.get_command()
-        args = await parser.get_options()
+        args = await parser.get_args()
         if command in callbacks:
             return await callbacks[command].main(msg, command, args)
     except Exception as e:
@@ -133,7 +133,7 @@ async def message_handlers(bot, msg: pyrogram.types.Message):
             userid = None
         parser = commands.Parser(me.username, text)
         command = await parser.get_command()
-        args = await parser.get_options()
+        args = await parser.get_args()
         if command in user_command:
             return await user_command[command].main(msg, command, args)
         
