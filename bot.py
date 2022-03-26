@@ -62,19 +62,6 @@ async def callback_query_handler(bot, msg: pyrogram.types.CallbackQuery):
     except Exception as e:
         return await bot.send_message(owner, str(e))
 
-# Anti react mode example
-# @bot.on_raw_update()
-# async def raw_update_handler(*args):
-#     msg: pyrogram.raw.types.Message = args[1].message
-#     chat_id = int("-100" + str(msg.peer_id.channel_id))
-#     if msg.from_id == me.id:
-#         return None
-#     if msg.edit_hide == False:
-#         await bot.send_message(chat_id, "PONG!!!", reply_to_message_id=msg.id)
-#     else:
-#         # Reacted
-#         return
-
 
 # Service message handlers
 @bot.on_message(pyrogram.filters.service)
