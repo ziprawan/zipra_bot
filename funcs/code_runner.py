@@ -79,13 +79,13 @@ async def main(msg: Message, cmd, args):
                 stderr = dump['stderr']
                 if stdout == '' and error != '':
                     # Eksekusi kode error
-                    message = stderr.replace('glot', 'aziz', 1)
+                    message = stderr
                 elif stdout != '' and error == '':
-                    message = stdout.replace('glot', 'aziz', 1)
+                    message = stdout
                 else:
                     message = "```No Output!```"
                 if len(message) < 4096:
-                    return await msg.reply(message, True)
+                    return await msg.reply(message, True, parse_mode=None)
                 else:
                     filename = f"zipra.{langs[cmd]}.txt"
                     with open(filename, 'w') as file:
