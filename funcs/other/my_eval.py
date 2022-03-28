@@ -1,5 +1,6 @@
 import sys, io, traceback, logging, subprocess
 from telethon.tl.custom.message import Message
+from telethon.tl.types import MessageEntityCode
 from utils.helper import get_length, send_sticker
 from utils.init import owner
 from utils.lang import Language
@@ -47,6 +48,7 @@ async def main(*args):
         result = stdout
     
     if result != None:
+        result = result.strip()
         if get_length(result) > 4096:
             logging.debug(f"[EvalHandler] Message length is {get_length(result)}. Sending as file instead.")
             with io.BytesIO(str.encode(result)) as out:
@@ -54,7 +56,13 @@ async def main(*args):
                 return await event.respond(file=out)
         else:
             logging.debug("[EvalHandler] Message length is less than 4096. Sending as message")
-            return await event.respond(result, parse_mode=None)
+            return await event.respond(
+                result, 
+                parse_mode=None,
+                formatting_entities = [MessageEntityCode(
+                    offset = 0,
+                    length = get_length(result)
+                )])
 
 async def aexec(code: str, event, client):
     exec(
