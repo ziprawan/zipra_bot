@@ -1,11 +1,11 @@
-import dotenv, os
+import dotenv, os, logging
 from telethon.sync import TelegramClient
 
 # Load .env
 if os.path.exists('.env'):
     dotenv.load_dotenv('.env')
 else:
-    raise ValueError(".env is missing!")
+    logging.warning("[init] .env file not found. Using defaults.")
 
 env = os.environ
 api_id = env.get("API_ID", None)
@@ -13,6 +13,10 @@ api_hash = env.get("API_HASH", None)
 bot_token = env.get("BOT_TOKEN", None)
 owner = int(env.get("OWNER", None))
 debug = str(env.get("DEBUG", None)).lower()
+
+if not api_id or not api_hash or not bot_token:
+    logging.error("[init] API_ID, API_HASH or BOT_TOKEN not found. Aborting.")
+    raise ValueError("Environment is missing!")
 
 if debug in ["true", "yes", "enabled", 'y']:
     debug = True
