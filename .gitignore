@@ -132,4 +132,5 @@ dmypy.json
 *.session*
 *.txt
 *.db
+*.db-journal
 test
