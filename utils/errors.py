@@ -31,25 +31,27 @@ async def errors_handler(error: Exception, event: Message, traceback):
     elif isinstance(error, errors.MessageIdInvalidError):
         pass
     else:
-        input_owner = await event.client.get_input_entity(owner)
-        msg = await lang.get('unhandled_error')
-        var = ['error']
-        res = [str(error)]
-        offs, lens = ol_generator(msg, var, res)
-        entities = [MessageEntityCode(offs[0], lens[0])]
-        msg = msg.format(error = str(error))
-        await event.respond(
-            msg,
-            formatting_entities = entities,
-            buttons = ReplyInlineMarkup([
-                KeyboardButtonRow([
-                    InputKeyboardButtonUserProfile(
-                        text = await lang.get('contact_us', True),
-                        user_id = input_owner
-                    )
+        if event._sender_id != owner:
+            input_owner = await event.client.get_input_entity(owner)
+            msg = await lang.get('unhandled_error')
+            var = ['error']
+            res = [str(error)]
+            offs, lens = ol_generator(msg, var, res)
+            entities = [MessageEntityCode(offs[0], lens[0])]
+            msg = msg.format(error = str(error))
+            await event.respond(
+                msg,
+                formatting_entities = entities,
+                buttons = ReplyInlineMarkup([
+                    KeyboardButtonRow([
+                        InputKeyboardButtonUserProfile(
+                            text = await lang.get('contact_us', True),
+                            user_id = input_owner
+                        )
+                    ])
                 ])
-            ])
-        )
+            )
+
         with BytesIO(str.encode(str(traceback))) as out:
             out.name = f"{error.__class__.__name__}_{round(time.time())}.txt"
             return await event.client.send_message(owner, error.args[0], file=out)
