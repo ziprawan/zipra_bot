@@ -4,7 +4,6 @@ from telethon import errors
 from telethon.tl.custom.message import Message
 from telethon.tl.types import (
     KeyboardButtonRow,
-    KeyboardButtonUserProfile,
     InputKeyboardButtonUserProfile,
     MessageEntityCode,
     ReplyInlineMarkup,
