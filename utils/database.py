@@ -1,3 +1,4 @@
+from pkgutil import get_data
 from types import NoneType
 from typing import Iterable
 import asyncio, aiosqlite, sqlite3
@@ -178,6 +179,22 @@ class Database:
         except Exception as e:
             await self._close_db()
             raise e
+
+    async def get_tables(self) -> list[str]:
+        tables = []
+        get_data_result = await self.get_data(['name'], {'type': 'table'})
+        
+        for i in get_data_result:
+            tables.append(i[0])
+
+        return tables
+    
+    async def check_table(self, table_name: str) -> bool:
+        tables = await self.get_tables()
+        if table_name in tables:
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     # Tests

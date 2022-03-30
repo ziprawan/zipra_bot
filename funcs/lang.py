@@ -1,5 +1,5 @@
-import logging
-from utils.database import MyDatabase
+import logging, re
+from utils.database import Database
 from utils.helper import check_perm, ol_generator
 from utils.init import supported_lang
 from utils.lang import Language
@@ -44,11 +44,12 @@ async def main(*args):
 
     logging.debug("[LangHandler] Getting data from database")
     chat_id = event.chat_id
-    db = MyDatabase('groups.db')
+    db = Database('groups', 'lang')
 
-    await db.exec("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
+    if (await db.check_table('lang')) == False:
+        await db.execute("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
     
-    fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
+    fetched = await db.get_data(['lang_code', {'chat_id': chat_id}])
     
     if buttons != []:
         rows.append(KeyboardButtonRow(buttons))
@@ -57,7 +58,7 @@ async def main(*args):
         logging.debug(f"[LangHandler] No lang data found for chat {chat_id}")
         lang_name = supported_lang['en']
     else:
-        detected_lang = fetched[0]['lang_code']
+        detected_lang = fetched[0][0]
         logging.debug(f"[LangHandler] Found lang data for chat {chat_id}: [{detected_lang}]")
 
         if detected_lang not in supported_lang:

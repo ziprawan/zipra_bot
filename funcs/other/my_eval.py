@@ -1,4 +1,4 @@
-import sys, io, traceback, logging, subprocess
+import sys, io, traceback, logging
 from telethon.tl.custom.message import Message
 from telethon.tl.types import MessageEntityCode
 from utils.helper import get_length, send_sticker
@@ -12,7 +12,6 @@ async def main(*args):
     lang = Language(event)
 
     code = await parser.get_args()
-
 
     if (await event.get_sender()).id != owner:
         logging.info("[EvalHandler] The sender is my owner. Aborting")
