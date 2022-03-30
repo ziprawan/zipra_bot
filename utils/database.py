@@ -182,10 +182,14 @@ class Database:
 
     async def get_tables(self) -> list[str]:
         tables = []
-        get_data_result = await self.get_data(['name'], {'type': 'table'})
+        await self._init_db()
+        get_data_result = await self.cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        fetched = await get_data_result.fetchall()
         
-        for i in get_data_result:
+        for i in fetched:
             tables.append(i[0])
+
+        await self._close_db()
 
         return tables
     

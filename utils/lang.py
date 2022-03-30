@@ -39,12 +39,12 @@ class Language:
             await db.execute("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
 
         chat_id = msg.chat_id
-        fetched = await db.get_data(['lang_code'])
+        fetched = await db.get_data(['lang_code'], {'chat_id': chat_id})
         # fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
         if fetched == []:
             lang_code = 'en'
         else:
-            lang = fetched[0]['lang_code']
+            lang = fetched[0][0]
             if lang in supported_lang:
                 lang_code = lang
             else:
