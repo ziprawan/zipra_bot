@@ -49,7 +49,7 @@ async def main(*args):
     if (await db.check_table('lang')) == False:
         await db.execute("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
     
-    fetched = await db.get_data(['lang_code', {'chat_id': chat_id}])
+    fetched = await db.get_data(['lang_code'], {'chat_id': chat_id})
     
     if buttons != []:
         rows.append(KeyboardButtonRow(buttons))
