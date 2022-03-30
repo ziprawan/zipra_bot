@@ -49,6 +49,8 @@ async def main(*args):
     
     if result != None:
         result = result.strip()
+        if result == "":
+            return True
         if get_length(result) > 4096:
             logging.debug(f"[EvalHandler] Message length is {get_length(result)}. Sending as file instead.")
             with io.BytesIO(str.encode(result)) as out:
