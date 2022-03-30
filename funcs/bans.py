@@ -1,5 +1,5 @@
 import inspect
-from utils.database import MyDatabase
+from utils.database import Database
 from utils.helper import Default, check_perm, get_user, ol_generator, send_sticker
 from utils.lang import Language
 from telethon.tl.custom.message import Message
@@ -125,12 +125,11 @@ async def unban(event: Message, lang: Language, user: str|int|list[str|int], rea
         return await event.respond(msg, formatting_entities=entities)
 
 async def nban(event: Message, lang: Language, user: TypePeer, reason: str):
+    # Temp
     chat = await event.get_chat()
     entities = []
     error_msg = ""
-    db = MyDatabase()
-
-    db.exec
+    db = Database('groups', 'nban')
 
 async def main(*args):
     event: Message = args[0]
