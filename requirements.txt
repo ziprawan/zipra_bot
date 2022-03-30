@@ -1,5 +1,7 @@
+aiofiles
+aiohttp
+aiosqlite
 https://github.com/New-dev0/Telethon/archive/PlayTime.zip
 python-dotenv
-aiohttp
-aiofiles
+pyfiglet
 tgcrypto

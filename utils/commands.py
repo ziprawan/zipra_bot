@@ -1,13 +1,13 @@
 from funcs import *
 from callback import *
-from utils.database import MyDatabase
+from utils.database import Database
 import telethon
 
 commands = {
     'start': start, 'dbg': dbg, 'ping': ping,
-    'help': help, 'setlang': lang, 'eval': my_eval, 'ban': bans,
+    'help': help, 'setlang': lang, 'eval': other.my_eval, 'ban': bans,
     'unban': bans, 'scope': other.scope, 'debugmode': other.debugmode,
-    'report_bug': other.report_bug
+    'report_bug': other.report_bug, 'figlet': for_fun.figlet
 }
 
 callbacks = {
