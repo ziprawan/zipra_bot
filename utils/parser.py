@@ -1,3 +1,8 @@
+class Args:
+    def __init__(self, splitted_by: str, text: str) -> None:
+        self.by = splitted_by
+        self.text = text
+
 class CallbackParser:
     def __init__(self, text: str|bytes):
         if isinstance(text, bytes):
@@ -17,12 +22,12 @@ class CallbackParser:
         return self.splitted[2]
 
 class Parser:
-    def __init__(self, username: str, text: str):
+    def __init__(self, username: str, text: str) -> None:
         self.uname = username.lower()
         self.text = text
         self.prefix = ['/', '!', '$', '\\']
     
-    async def get_command(self, return_bot_command: bool = False):
+    def get_command(self, return_bot_command: bool = False) -> str | None:
         text: str = self.text # Example: /start@test_bot args
         if text == None:
             return None
@@ -56,21 +61,36 @@ class Parser:
         else:
             return None
 
-    async def get_args(self):
+    def get_args(self, index: int = 0) -> list | None:
         text = self.text
-        command = await self.get_command(True)
+        command = self.get_command(True)
         if text == None or command == None:
             return None
         else:
-            replaced = text.replace(command, '')
-            stripped = replaced.strip()
-            if stripped == '':
-                return None
-            else:
-                return stripped
+            text = text.replace(command, "").strip()
+            if text == '':
+                return [], ''
+
+            splitted = text.split()
+            lsplit = len(splitted)
+
+            if index > lsplit or abs(index) > lsplit:
+                raise IndexError(f"Splitted length just {len(splitted)}, but requested index is {index}")
+
+            isplit = splitted[:index]
+
+            for s in isplit:
+                found = text.find(s)
+                s_len = len(s)
+                _r = text[found:s_len]
+                _rplc = text.replace(_r, '')
+                text = _rplc.strip()
+
+            return isplit, text
+
 # Tests
 if __name__ == '__main__':
-    import asyncio
+    import random
     text_to_test = [
         "/start",
         "/start@Ziprathon_bot",
@@ -85,9 +105,12 @@ if __name__ == '__main__':
     ]
     uname = "Ziprathon_bot"
     for text in text_to_test:
-        # print("==========")
+        print("=================")
+        print(f"Text: {text}")
         parser = Parser(uname, text)
-        cmd = asyncio.run(parser.get_command())
-        args = asyncio.run(parser.get_args())
-        print(f"Text: {text}\nCommand: {cmd}\nArgs: {args}")
-        print("==========")
+        cmd = parser.get_command()
+        print(f"Command: {cmd}")
+        args = parser.get_args(random.randint(-2,2))
+        print(f"Args:{args}")
+        print("=================")
+        print("\n")
