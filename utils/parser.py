@@ -74,9 +74,6 @@ class Parser:
             splitted = text.split()
             lsplit = len(splitted)
 
-            if index > lsplit or abs(index) > lsplit:
-                raise IndexError(f"Splitted length just {len(splitted)}, but requested index is {index}")
-
             isplit = splitted[:index]
 
             for s in isplit:
@@ -105,12 +102,16 @@ if __name__ == '__main__':
     ]
     uname = "Ziprathon_bot"
     for text in text_to_test:
-        print("=================")
-        print(f"Text: {text}")
-        parser = Parser(uname, text)
-        cmd = parser.get_command()
-        print(f"Command: {cmd}")
-        args = parser.get_args(random.randint(-2,2))
-        print(f"Args:{args}")
-        print("=================")
-        print("\n")
+        try:
+            print("=================")
+            print(f"Text: {text}")
+            parser = Parser(uname, text)
+            cmd = parser.get_command()
+            print(f"Command: {cmd}")
+            args = parser.get_args(random.randint(-3,3))
+            print(f"Args:{args}")
+            print("=================")
+            print("\n")
+        except IndexError as e:
+            print("Index Error caused by random.randint. It should be okay!")
+            print(e)
