@@ -63,4 +63,4 @@ class Language:
         if string_name in lang_data:
             return lang_data[string_name].replace(r"\n", "\n")
         else:
-            return "null"
+            return string_name
