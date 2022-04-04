@@ -8,7 +8,7 @@ async def main(*args):
     event: telethon.tl.custom.message.Message = args[0]
     parser: Parser = args[1]
 
-    text = await parser.get_args()
+    text = parser.get_args()[1]
 
     if text == None:
         return await event.reply("Give text!")

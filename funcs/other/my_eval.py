@@ -11,7 +11,7 @@ async def main(*args):
     parser = args[1]
     lang = Language(event)
 
-    code = await parser.get_args()
+    code = parser.get_args()[1]
 
     if (await event.get_sender()).id != owner:
         logging.info("[EvalHandler] The sender is my owner. Aborting")

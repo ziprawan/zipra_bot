@@ -19,7 +19,7 @@ async def main(*args):
     logging.debug("[HelpHandler] Setting the required variables")
     event: Message = args[0]
     logging.debug("[HelpHandler] Parsing options")
-    params = await args[1].get_args()
+    params = args[1].get_args()[1]
     me: User = args[2]
     lang = Language(event)
     logging.debug("[HelpHandler] Call event.get_sender")

@@ -12,15 +12,15 @@ from telethon.tl.types import (
 async def main(*args):
     logging.debug("[StartHandler] ")
     event: Message = args[0]
-    parsed = args[1]
+    parsed: Parser = args[1]
     me: User = args[2]
     owner: int = args[3]
     sender = await event.get_sender()
     lang = Language(event)
 
-    params = await parsed.get_args()
+    params = parsed.get_args()[1]
     prsr = Parser(me.username, f'/{params}')
-    cmd = await prsr.get_command()
+    cmd = prsr.get_command()
     link_arg = cmd if params else 'start'
     if not event.is_private:
         return await event.reply(

@@ -8,7 +8,7 @@ async def main(*args):
     client: telethon.TelegramClient = event.client
     lang = utils.lang.Language(event)
 
-    payload = await parser.get_args()
+    payload = parser.get_args()[1]
 
     if payload == None:
         return await client(

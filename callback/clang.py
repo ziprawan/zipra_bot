@@ -29,7 +29,7 @@ async def main(*args):
     logging.debug("[LangCallback] User is admin")
     logging.debug("[LangCallback] Parsing options")
     chat_id = event.chat_id
-    lang_code = await parser.get_args()
+    lang_code = parser.args
     logging.debug("[LangCallback] Fetching data from database")
     fetched = await db.get_data({'lang_code'}, {'chat_id': chat_id})
 
