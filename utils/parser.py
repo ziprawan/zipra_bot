@@ -8,18 +8,12 @@ class CallbackParser:
         if isinstance(text, bytes):
             text = text.decode()
         if not isinstance(text, str):
-            raise TypeError(f"We need 'str' type. Not {type(text)}!")
+            raise TypeError(f"We need 'str' type, not {type(text)}!")
         # Ex. pin_1234567890_loud
-        self.splitted = text.split('_', 2) # ['pin', '1234567890', 'loud']
-    
-    async def get_command(self):
-        return self.splitted[0]
-    
-    async def get_user(self):
-        return self.splitted[1]
-    
-    async def get_args(self):
-        return self.splitted[2]
+        splitted = text.split('_', 2) # ['pin', '1234567890', 'loud']
+        self.command = splitted[0]
+        self.user_id = int(splitted[1])
+        self.args = splitted[2]
 
 class Parser:
     def __init__(self, username: str, text: str) -> None:
@@ -69,10 +63,9 @@ class Parser:
         else:
             text = text.replace(command, "").strip()
             if text == '':
-                return [], ''
+                return [], None
 
             splitted = text.split()
-            lsplit = len(splitted)
 
             isplit = splitted[:index]
 
