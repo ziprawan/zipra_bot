@@ -55,7 +55,7 @@ class Parser:
         else:
             return None
 
-    def get_args(self, index: int = 0) -> list | None:
+    def get_args(self, index: int = 0) -> tuple[list, str] | None:
         text = self.text
         command = self.get_command(True)
         if text == None or command == None:
@@ -63,7 +63,7 @@ class Parser:
         else:
             text = text.replace(command, "").strip()
             if text == '':
-                return [], None
+                return None
 
             splitted = text.split()
 
