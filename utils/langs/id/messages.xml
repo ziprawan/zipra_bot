@@ -19,6 +19,7 @@
     <string name="report_bug_sent">Laporanmu udah kekirim dan akan di review sama developernya</string>
     <string name="please_wait">Tunggu bentar...</string>
     <!--     Error messages -->
+    <string name="not_replied">Balasan tidak terdeteksi. Mohon reply ke suatu user</string>
     <string name="non_private_error">Mohon maaf, gunakan ini di obrolan pribadi!</string>
     <string name="me_not_admin">Sayangnya, ku bukan admin disini :(</string>
     <string name="admin_error">Kau ga punya hak akses admin!</string>
@@ -28,7 +29,7 @@
     <string name="more_user_not_found">🛑 Peringatan: Ku ga nemu user ini:\n{user}</string>
     <string name="missing_perms">Kamu ga ada izin ini:\n{perm}</string>
     <string name="i_missing_perms">Saya ga ada izin ini:\n{perm}</string>
-    <string name="unhandled_error">⚠️ Erro yang tidak terhandle: {error}\n\nMohon laporin ini ke pemilik ku atau dengan menggunakan perintah /report_bug!</string>
+    <string name="unhandled_error">⚠️ Eror yang tidak terhandle: {error}\n\nMohon laporin ini ke pemilik ku atau dengan menggunakan perintah /report_bug!</string>
     <string name="no_code">Kode belum diisi!</string>
     <string name="report_bug_template_empty">Templat lapor bug:\n\n/report_bug Perintahnya apa?\nPesan errornya?\nApakah ada reply?\nApakah usernya admin?\nApakah botnya admin?\nIngfo tambahan:</string>
     <string name="args_too_long">Argumen terlalu panjnag! Panjang argumen yang diterima cuma 4000 karakter!</string>

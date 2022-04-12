@@ -19,6 +19,7 @@
     <string name="report_bug_sent">Your report has been successfully submitted and will be reviewed by the developer</string>
     <string name="please_wait">Please wait...</string>
     <!--     Error messages -->
+    <string name="not_replied">Reply not detected. Please reply to user</string>
     <string name="non_private_error">Sorry, use it from private chat!</string>
     <string name="me_not_admin">Unfortunately, I\'m not admin in here :(</string>
     <string name="admin_error">You do not have admin privileges!</string>
