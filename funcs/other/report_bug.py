@@ -1,5 +1,9 @@
 import traceback
-import telethon, utils, base64
+
+import base64
+import telethon
+import utils
+
 
 async def main(*args):
     event: telethon.tl.custom.message.Message = args[0]
@@ -8,20 +12,21 @@ async def main(*args):
     client: telethon.TelegramClient = event.client
     lang = utils.lang.Language(event)
 
-    payload = parser.get_args()[1]
+    payload = parser.get_args().raw_text
 
-    if payload == None:
+    if payload is None:
         return await client(
             telethon.tl.functions.messages.SendMediaRequest(
-                peer = await event.get_input_chat(),
-                media = telethon.tl.types.InputMediaPhoto(
-                    id = telethon.tl.types.InputPhoto(
-                        id = 6199740585917657401,
-                        access_hash = -8701471236202862983,
-                        file_reference = b'\x02D\x15\xdc\x01\x00\x00\x12\xecbAX\xa7H\xce\x1bi\xfa\xdd\xaa\xd2*Jc\x91\t\x98?+'
+                peer=await event.get_input_chat(),
+                media=telethon.tl.types.InputMediaPhoto(
+                    id=telethon.tl.types.InputPhoto(
+                        id=6199740585917657401,
+                        access_hash=-8701471236202862983,
+                        file_reference=b'\x02D\x15\xdc\x01\x00\x00\x12\xecbAX\xa7H\xce\x1bi\xfa\xdd\xaa\xd2*Jc\x91\t'
+                                       b'\x98?+ '
                     )
                 ),
-                message = await lang.get('report_bug_template_empty')
+                message=await lang.get('report_bug_template_empty')
             )
         )
     else:
@@ -34,10 +39,11 @@ async def main(*args):
             await event.reply(await lang.get('report_bug_sent'))
             return await client.send_message(owner, msg)
 
+
 async def answer_report(
-    event: telethon.tl.custom.message.Message, 
-    replied: telethon.tl.custom.message.Message
-    ):
+        event: telethon.tl.custom.message.Message,
+        replied: telethon.tl.custom.message.Message
+):
     if '\n' in replied.raw_text:
         splitted = replied.raw_text.split('\n')
         try:
@@ -48,11 +54,11 @@ async def answer_report(
             client: telethon.TelegramClient = event.client
 
             return await client.send_message(
-                entity = await client.get_input_entity(int(chat_id)),
-                message = to_reply,
-                reply_to = int(message_id),
-                parse_mode = None,
-                formatting_entities = entities
+                entity=await client.get_input_entity(int(chat_id)),
+                message=to_reply,
+                reply_to=int(message_id),
+                parse_mode=None,
+                formatting_entities=entities
             )
         except:
             print(traceback.format_exc())
