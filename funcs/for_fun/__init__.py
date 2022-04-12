@@ -1,1 +1,1 @@
-from funcs.for_fun import figlet
+from funcs.for_fun import figlet, get_pp
