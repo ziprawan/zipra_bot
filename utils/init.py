@@ -4,6 +4,8 @@ import os
 import time
 from telethon.sync import TelegramClient
 
+logging.basicConfig(format="[%(levelname)s] %(message)s")
+
 # Load .env
 if os.path.exists('.env'):
     dotenv.load_dotenv('.env')
@@ -14,7 +16,7 @@ env = os.environ
 api_id = env.get("API_ID", None)
 api_hash = env.get("API_HASH", None)
 bot_token = env.get("BOT_TOKEN", None)
-owner = int(env.get("OWNER", None))
+owner = env.get("OWNER", None)
 debug = str(env.get("DEBUG", None)).lower()
 start_time = time.time()
 
@@ -24,8 +26,9 @@ if not api_id or not api_hash or not bot_token:
 
 try:
     api_id = int(api_id)
-except TypeError:
-    api_id = 0
+    owner = int(owner)
+except TypeError as e:
+    raise TypeError("Environment is missing or value is wrong!")
 
 if debug in ["true", "yes", "enabled", 'y']:
     debug = True

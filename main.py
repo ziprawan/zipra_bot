@@ -1,3 +1,5 @@
+import logging
+
 import telethon
 import traceback
 from telethon.events.callbackquery import CallbackQuery
@@ -14,9 +16,9 @@ if telethon.__version__ != '1.25.1':
     raise ValueError("Install telethon from requirements.txt")
 
 if debug:
-    logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.DEBUG)
+    logging.getLogger().setLevel(logging.DEBUG)
 else:
-    logging.basicConfig(format="%(message)s", level=logging.WARN)
+    logging.getLogger().setLevel(logging.WARNING)
 
 logging.debug("[Main] Registering event handler")
 
