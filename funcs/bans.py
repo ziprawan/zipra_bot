@@ -1,148 +1,123 @@
 import inspect
-from utils.database import MyDatabase
-from utils.helper import Default, check_perm, get_user, ol_generator, send_sticker
+from utils.database import Database
+from utils.helper import Default, check_perm, get_user, ol_generator, get_multi_lang_num
 from utils.lang import Language
+from utils.parser import Parser
+
 from telethon.tl.custom.message import Message
+from telethon.tl.patched import User
 from telethon.sync import TelegramClient, errors
 from telethon.tl.types import (
-    Channel,
     InputMessageEntityMentionName,
     InputUser,
     MessageEntityCode,
     TypePeer,
     User,
-    InputPeerSelf
+    InputPeerSelf,
+    Channel,
+    MessageEntityTextUrl,
 )
 
-async def bans(client: TelegramClient, chat, user: TypePeer, ban = True):
-    if ban == True:
-        r = None
-    else:
-        r = True
+
+async def bans(client: TelegramClient, chat: TypePeer, user: TypePeer | User | Channel, is_unban: bool | None = None):
     try:
         await client.edit_permissions(
-            chat, user, 0,
-            view_messages = r
+            entity=chat,
+            user=user,
+            view_messages=is_unban
         )
         return True
     except errors.UserAdminInvalidError:
-        return False        
-    
+        return False
 
-async def ban(event: Message, lang: Language, user: str|int|list[str|int], reason: str):
-    chat = await event.get_chat()
-    entities = []
-    error_msg = ""
 
-    if isinstance(user, list):
-        success, failed = 0, 0
-        for u in user:
-            try:
-                usr = await get_user(event, u)
-                result = await bans(event.client, chat, usr)
-                if result == True:
-                    success += 1
-                else:
-                    failed += 1
-            except ValueError as v:
-                error_msg += str(v) + '\n'
-                failed += 1
-        if error_msg != "":
-            await event.respond(error_msg)
-        msg = (await lang.get('restrict_batch')).format_map(Default(action="Ban", success=str(success), failed=str(failed)))
-        return await event.respond(msg)
-    else:
-        try:
-            result = await bans(event.client, chat, user)
-        except ValueError as e:
-            error_msg = str(e)
-            return await event.respond(error_msg)
-        if result == True:
-            msg = await lang.get('banned')
-            var = ['name']
-            entity = await event.client.get_entity(user)
-            print(type(entity))
-            res = [entity.first_name if isinstance(entity, User) else entity.title]
-            offs, lens = ol_generator(msg, var, res)
-            msg = msg.format(name=res[0])
-            entities = [InputMessageEntityMentionName(offset=offs[0], length=lens[0], user_id=InputUser(user_id=entity.id, access_hash=entity.access_hash))]
+async def ban(event: Message, cmd: str, lang: Language, user: list[User | Channel], reason: str):
+    _client = event.client
+    _chat = await event.get_chat()
+    _user = user
+    _error = []
+    _success = []
+
+    for _u in user:
+        ban_result = await bans(_client, _chat, _u, True if cmd == 'unban' else None)
+        if ban_result is False:
+            _error.append(_u)
         else:
-            msg = await lang.get('restrict_admin_error')
-            msg = msg.format(action=inspect.stack()[0].function)
-            entities = []
-        await send_sticker(
-            event.client, 
-            chat, 
-            6080049489123476920, 
-            -8737819976689190729, 
-            b'\x02_U\xfe\x0e\x00\x00M\xb5b\x0b4\xf3\xbd\xebR\xa9\xf1<=\xac\x94nt\xebG\xe2\x08\xa9',
-            "Hahahaha, got banned!",
-            False)
-        return await event.respond(msg, formatting_entities=entities)
-        
+            _success.append(_u)
 
-async def unban(event: Message, lang: Language, user: str|int|list[str|int], reason: str):
-    chat = await event.get_chat()
+    _msg_success = await get_multi_lang_num(lang, len(_success), 'banned' if cmd == 'ban' else 'unbanned')
+    _msg_error = await get_multi_lang_num(lang, len(_error), 'restrict_admin_error')
+    _msg_reason = await lang.get('reason')
+    _all = _success + _error
+
+    _msg_tmp = _msg_success.format(
+        n=len(_success),
+        users=", ".join("{user" + str(_) + "}" for _ in range(len(_success)))
+    ) + "\n" + _msg_error.format(
+        n=len(_error),
+        users=", ".join("{user" + str(_) + "}" for _ in range(len(_success), len(_all)))
+    ) + "\n" + (_msg_reason if reason else "")
+
+    offs, lens = ol_generator(
+        _msg_tmp,
+        [f'user{i}' for i in range(len(_all))],
+        [str(u.title if hasattr(u, 'title') else u.first_name) for u in _all]
+    )
+
+    _msg = _msg_success.format(
+        n=len(_success),
+        users=", ".join(str(u.title if hasattr(u, 'title') else u.first_name) for u in _success)
+    ) + "\n" + _msg_error.format(
+        n=len(_error),
+        users=", ".join(str(u.title if hasattr(u, 'title') else u.first_name) for u in _error)
+    ) + "\n" + (_msg_reason.format(reason=reason) if reason else "")
+
     entities = []
-    error_msg = ""
 
-    if isinstance(user, list):
-        success, failed = 0, 0
-        for u in user:
-            try:
-                usr = await get_user(event, u)
-                result = await bans(event.client, chat, usr)
-                if result == True:
-                    success += 1
-                else:
-                    failed += 1
-            except ValueError as v:
-                error_msg += str(v) + '\n'
-                failed += 1
-        if error_msg != "":
-            await event.respond(error_msg)
-        msg = (await lang.get('restrict_batch')).format_map(Default(action="Unban", success=str(success), failed=str(failed)))
-        return await event.respond(msg)
-    else:
-        try:
-            result = await bans(event.client, chat, user)
-        except ValueError as e:
-            error_msg = str(e)
-            return await event.respond(error_msg)
-        if result == True:
-            msg = await lang.get('unbanned')
-            var = ['name']
-            entity = await event.client.get_entity(user)
-            print(type(entity))
-            res = [entity.first_name if isinstance(entity, User) else entity.title]
-            offs, lens = ol_generator(msg, var, res)
-            msg = msg.format(name=res[0])
-            entities = [InputMessageEntityMentionName(offset=offs[0], length=lens[0], user_id=InputUser(user_id=entity.id, access_hash=entity.access_hash))]
-        else:
-            msg = await lang.get('restrict_admin_error')
-            msg = msg.format(action=inspect.stack()[0].function)
-            entities = []
-        return await event.respond(msg, formatting_entities=entities)
+    for i in range(len(_all)):
+        if isinstance(_all[i], Channel):
+            entities.append(MessageEntityTextUrl(
+                offset=offs[i],
+                length=lens[i],
+                url=f'https://t.me/{_all[i].username}'
+            ))
+        entities.append(InputMessageEntityMentionName(
+            offset=offs[i],
+            length=lens[i],
+            user_id=InputUser(
+                user_id=_all[i].id,
+                access_hash=_all[i].access_hash
+            )
+        ))
+
+    return await event.reply(
+        _msg,
+        formatting_entities=entities,
+        link_preview=None
+    )
+
 
 async def nban(event: Message, lang: Language, user: TypePeer, reason: str):
+    # Temp
     chat = await event.get_chat()
     entities = []
     error_msg = ""
-    db = MyDatabase()
+    db = Database('groups', 'nban')
 
-    db.exec
 
 async def main(*args):
     event: Message = args[0]
+    client: TelegramClient = event.client
     lang = Language(event)
+    _user_error = []
 
     # Check private
     if event.is_private:
         return await event.reply(await lang.get('private_error'))
 
-    parser = args[1]
-    param: str = await parser.get_args()
-    cmd = await parser.get_command()
+    parser: Parser = args[1]
+    param = parser.get_args()
+    cmd: str = parser.get_command()
     can_ban_user = await check_perm(event, 'ban_users')
     i_can_ban = await check_perm(event, 'ban_users', user=InputPeerSelf())
 
@@ -152,42 +127,62 @@ async def main(*args):
             msg = await lang.get('i_missing_perms')
         elif not can_ban_user:
             msg = await lang.get('missing_perms')
+        else:
+            msg = ""
         offs, lens = ol_generator(msg, ['perm'], ['ban_users'])
         return await event.reply(
             msg.format_map(Default(perm="ban_users")),
-            formatting_entities = [MessageEntityCode(
-                offset = offs[0],
-                length = lens[0]
+            formatting_entities=[MessageEntityCode(
+                offset=offs[0],
+                length=lens[0]
             )]
         )
 
     # Getting user
-    replied = await event.get_reply_message()
+    replied: Message = await event.get_reply_message()
     if replied:
-        user = await replied.get_sender()
-        reason = param if param == None else param.split()
+        users = await replied.get_sender()
+        reason = param if param is None else param.raw_text
     else:
-        if param:
-            splitted = param.split(' ')
-            tmp = splitted[0]
-            if '\n' in tmp:
-                tmp = tmp.split('\n')
-            reason = param.replace(tmp, '', 1).strip()
-            user = []
-            if ',' in tmp:
-                for i in tmp.split(','):
-                    if i != '':
-                        user.append(int(i) if i.isdigit() else i)
-            else:
-                user = int(tmp) if tmp.isdigit() else tmp
-        else:
+        if param.raw_text is None:
             return await event.reply((await lang.get('not_replied')).format(action=cmd))
+        else:
+            param = param.cut(1)
+            _users = list(set(param.splitted[0].split(',')))
+            users = []
+            for u in _users:
+                try:
+                    users.append(await client.get_entity(u))
+                except ValueError:
+                    if u not in _user_error:
+                        _user_error.append(str(u))
+            reason = param.replaced
 
-    if cmd == "ban":
-        return await ban(event, lang, user, reason)
-    elif cmd == "unban":
-        return await unban(event, lang, user)
+    if cmd == "ban" or cmd == "unban":
+        await ban(event, cmd, lang, users, reason)
     elif cmd == "nban":
-        return await nban(event, lang, user)
+        await nban(event, lang, users, reason)
     # elif cmd == "kick":
     #     return await kick(event, lang, user, reason)
+
+    # For user not found error
+    _l_u_e = len(_user_error)
+    if _l_u_e == 0:
+        return
+    else:
+        if _l_u_e == 1:
+            msg = await lang.get('one_user_not_found')
+        elif _l_u_e == 2:
+            msg = await lang.get('two_user_not_found')
+        else:
+            msg = await lang.get('more_user_not_found')
+
+        _j = " ".join(_user_error).strip()
+        offs, lens = ol_generator(msg, ['user'], [_j])
+        return await event.respond(
+            msg.format(user=_j),
+            formatting_entities=[MessageEntityCode(
+                offset=offs[0],
+                length=lens[0]
+            )]
+        )

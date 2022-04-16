@@ -1,64 +1,216 @@
-import asyncio
+from pkgutil import get_data
+from types import NoneType
+from typing import Iterable
+import asyncio, aiosqlite, sqlite3
 
-class DatabaseExecutorError(BaseException): ...
-
-class MyDatabase:
-    def __init__(self, database):
-        self.path = f'databases/{database}'
-    async def exec(self, cmd):
-        PIPE = asyncio.subprocess.PIPE
-        command = f'sqlite3 {self.path} ".mode list" ".header on" "{cmd}"'
-        executed = await asyncio.subprocess.create_subprocess_shell(command, True, PIPE, PIPE)
-        stdout, stderr = await executed.communicate()
-        if stderr != b'':
-            raise DatabaseExecutorError(f"Error while executing sqlite command.\nError: {stderr.decode()}")
-        return stdout.decode()
-    async def get_data(self, cmd):
-
-        out = await self.exec(cmd)
-        get_data_result = []
-
-        splitted_by_newline = out.splitlines()
-
-        if splitted_by_newline == []:
-            return get_data_result
+class Database:
+    def __init__(self, db_name: str, table_name: str) -> None:
+        self.db_path = f"databases/{db_name}.db"
+        self.table = table_name
         
-        var_names = splitted_by_newline[0].split("|") 
-        splitted_by_newline.pop(0) 
+    async def _init_db(self) -> None:
+        """It's better to don't execute it on outside of this class"""
+        self.db = await aiosqlite.connect(self.db_path)
+        self.cur = await self.db.cursor()
 
-        if splitted_by_newline[-1] == '':
-            splitted_by_newline.pop(-1) 
+    async def _close_db(self) -> None:
+        """It's better to don't execute it on outside of this class"""
+        await self.cur.close()
+        await self.db.close()
 
-        if splitted_by_newline == []:
-            return splitted_by_newline
+    async def _commit_db(self) -> bool | None:
+        """It's better to don't execute it on outside of this class"""
+        is_error = True
+        while is_error:
+            try:
+                await self.db.commit()
+                is_error = False
+                return True
+            except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e).lower():
+                    is_error = True
+                elif 'database or disk is full' in str(e).lower():
+                    exit("ERROR! DATABASE OR DISK IS FULL!")
+                else:
+                    raise e
 
-        for splitted in splitted_by_newline:
-            splitted_by_vertical_bar = splitted.split("|")
-            tmp = {}
-            for i in range(len(var_names)):
-                tmp[var_names[i]] = splitted_by_vertical_bar[i]
+    async def execute(self, cmd: str, params: Iterable = None) -> sqlite3.Cursor:
+        await self._init_db()
+        result = await self.cur.execute(cmd, params)
+        r = await self._commit_db()
+        await self._close_db() if r == True else None
+        return result
 
-            get_data_result.append(tmp)
+    async def get_data(
+        self, selects: list | tuple | set | None = None, 
+        wheres: dict | None = None
+        ) -> Iterable[sqlite3.Row] | None:
+        # Check types
+        if not isinstance(selects, (list, tuple, set, NoneType)) or not isinstance(wheres, (dict, NoneType)):
+            raise TypeError
 
-        return get_data_result
+        try:
+            # Initialize database
+            await self._init_db()
+
+            # Generate command
+            params = [param for _, param in wheres.items()] if not isinstance(wheres, NoneType) else []
+            
+            if isinstance(selects, NoneType) and isinstance(wheres, NoneType):
+                cmd = f"SELECT * FROM {self.table}"
+            else:
+                selects = selects if not isinstance(selects, NoneType) else []
+                cols = [f"{col_name}=?" for col_name in wheres] if not isinstance(wheres, NoneType) else []
+                cmd = "SELECT "
+                cmd += ", ".join(selects) if selects != [] else "* "
+                cmd += f" FROM {self.table} WHERE " if cols != [] else f" FROM {self.table}"
+                cmd += " AND ".join(cols) if cols != [] else ""
+
+            # Execute and fetch result
+            await self.cur.execute(cmd, params)
+            fetched = await self.cur.fetchall()
+
+            # Safe close database
+            await self._close_db()
+
+            # Return result
+            return fetched
+        except Exception as e:
+            await self._close_db()
+            raise e
+
+    async def insert_data(self, inserts: dict) -> None:
+        # Check types
+        if not isinstance(inserts, dict):
+            raise TypeError
+        try:
+            # Initialize database
+            await self._init_db()
+
+            # Generate command
+            cols = [col for col in inserts]
+            params = [param for _, param in inserts.items()]
+            cmd = f"INSERT INTO {self.table}("
+            cmd += ", ".join(cols)
+            cmd += ") VALUES("
+            cmd += ", ".join("?" for _ in inserts)
+            cmd += ")"
+
+            # Execute time!
+            await self.cur.execute(cmd, params)
+
+            # Commit to db
+            r = await self._commit_db()
+
+            # Don't forget to close the database
+            if r == True:
+                await self._close_db()
+
+            return None
+        except Exception as e:
+            await self._close_db()
+            raise e
+
+    async def update_data(self, new: dict, conditions: dict) -> None:
+        # Check types
+        if not isinstance(new, dict) or not isinstance(conditions, dict):
+            raise TypeError
+
+        try:
+            # Some needed variable
+            params = [n for _, n in new.items()] + [c for _, c in conditions.items()]
+            cols = [f"{col}=?" for col in new]
+            cons = [f"{con}=?" for con in conditions]
+
+            # Generate command
+            cmd = f"UPDATE {self.table} SET " 
+            cmd += ", ".join(cols) 
+            cmd += " WHERE " 
+            cmd += " AND ".join(cons)
+            cmd = cmd.strip()
+
+            # Init db
+            await self._init_db()
+
+            # Execute command
+            await self.cur.execute(cmd, params)
+
+            # Commit to databse
+            r = await self._commit_db()
+
+            # Safely close database
+            if r == True:
+                await self._close_db()
+
+            return None
+        except Exception as e:
+            await self._close_db()
+            raise e
+
+    async def delete_data(self, wheres: dict) -> None:
+        # Check types
+        if not isinstance(wheres, dict):
+            raise TypeError
+
+        try:
+            # Needed variables
+            cols = [f"{col}=?" for col in wheres]
+            params = [p for _, p in wheres.items()]
+
+            # Generate sql command
+            cmd = f"DELETE FROM {self.table} WHERE "
+            cmd += ", ".join(cols)
+            cmd = cmd.strip()
+
+            # Init db
+            await self._init_db()
+
+            # Execute cmd
+            await self.cur.execute(cmd, params)
+
+            # Commit to db
+            r = await self._commit_db()
+
+            # Safely close the db
+            if r == True:
+                await self._close_db()
+
+            return None
+        except Exception as e:
+            await self._close_db()
+            raise e
+
+    async def get_tables(self) -> list[str]:
+        tables = []
+        await self._init_db()
+        get_data_result = await self.cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        fetched = await get_data_result.fetchall()
+        
+        for i in fetched:
+            tables.append(i[0])
+
+        await self._close_db()
+
+        return tables
     
-    @staticmethod
-    def format(text: str):
-        if not isinstance(text, str):
-            raise ValueError(f"excpected str, got {type(text)}")
-        
-        p = "'"
-        new_text = p
+    async def check_table(self, table_name: str) -> bool:
+        tables = await self.get_tables()
+        if table_name in tables:
+            return True
+        else:
+            return False
 
-        for i in text:
-            tmp = i
-            if i == p:
-                tmp = i*2
-            new_text += tmp
-        
-        new_text += p
-        return new_text
-    
-    @staticmethod
-    def stringify(text: str):
-        return format(text)
+if __name__ == '__main__':
+    # Tests
+    async def test():
+        db = Database('test', 'my_table')
+        await db.insert_data({'name': 'Aziz Ridhwan Pratama', 'age': 15, 'country': 'Indonesia'})
+        print(await db.get_data(wheres = {'country': 'Indonesia'}))
+        db = Database('test', 'my_table')
+        await db.update_data({'age': 16}, {'id': 4})
+        print(await db.get_data({'name', 'age'}, {'country': 'Malaysia'}))
+        db = Database('test', 'my_table')
+        await db.delete_data({'id': 4})
+        print(await db.get_data({'name', 'age'}))
+
+    asyncio.run(test())

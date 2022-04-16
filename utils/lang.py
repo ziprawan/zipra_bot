@@ -1,5 +1,5 @@
 from telethon.tl.custom.message import Message
-from utils.database import MyDatabase
+from utils.database import Database
 from utils.init import supported_lang
 import xml.etree.ElementTree as ElementTree, os, logging
 
@@ -22,7 +22,7 @@ for lang in supported_lang:
 class Language:
     def __init__(self, msg: Message):
         # Declare variables
-        db = MyDatabase('groups.db')
+        db = Database('groups', 'lang')
 
         self.db = db
         self.msg = msg
@@ -35,13 +35,16 @@ class Language:
         db = self.db
         msg = self.msg
 
-        await db.exec("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
+        if (await db.check_table('lang')) == False:
+            await db.execute("CREATE TABLE IF NOT EXISTS lang (id integer PRIMARY KEY, chat_id integer NOT NULL, lang_code text(5))")
+
         chat_id = msg.chat_id
-        fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
+        fetched = await db.get_data(['lang_code'], {'chat_id': chat_id})
+        # fetched = await db.get_data("SELECT lang_code FROM lang WHERE chat_id = %d" % chat_id)
         if fetched == []:
             lang_code = 'en'
         else:
-            lang = fetched[0]['lang_code']
+            lang = fetched[0][0]
             if lang in supported_lang:
                 lang_code = lang
             else:
@@ -60,4 +63,4 @@ class Language:
         if string_name in lang_data:
             return lang_data[string_name].replace(r"\n", "\n")
         else:
-            return "null"
+            return string_name

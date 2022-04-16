@@ -1,26 +1,36 @@
 <?xml version="1.1" encoding="utf-8"?>
 <resources>
     <!-- Normal messages -->
-    <string name="start_message_private">Hai {name}, nama saya {bot_name}!\n\nSaya dikembangkan oleh @Pra210906. Saya harap saya bisa mengatur kebutuhanmu di grup 😊\n\nUntuk pertolongan kamu bisa ketik /help</string>
+    <string name="start_message_private">Hai {name}, namaku {bot_name}!\n\nSaya dikembangkan sama @ridhwan_aziz. Saya harap saya bisa membantu kebutuhanmu di grup 😊\n\nUntuk bantuan kamu bisa ketik /help</string>
     <string name="response_time">⌛️ Waktu respon: </string>
-    <string name="help_message">Halo {name}!\n\nSaya {bot_name} dan saya dikembangkan oleh @Pra210906.\n\nJika Anda menemukan bug, laporkan saja padanya :)\n\nDiberdayakan oleh Telethon {version}</string>
+    <string name="help_message">Halo {name}!\n\nSaya {bot_name} dan saya dikembangin sama @ridhwan_aziz.\nKalau kamu nemu bug, tinggal laport ke dia :)\n\nMenggunakan Telethon {version}</string>
     <string name="change_lang_success">Berhasil mengubah bahasa ke: {lang_name}</string>
-    <string name="change_lang_dialog"></string>
-    <string name="about_me">Bot info\nID: {id}\nName: {name}\nUsername: {uname}\n\nOwner info\nID: {oid}\nName: {oname}\nUsername: {ouname}</string>
-    <string name="banned">{name} has been banned!</string>
-    <string name="reason">Reason: {reason}</string>
-    <string name="unbanned">Ok, {name} can join again :)</string>
-    <string name="restrict_batch">{action} result:\n\nSucessful: {success} user(s)\nFailed: {failed} user(s)</string>
-    <!-- Error messages -->
-    <string name="non_private_error">Sorry, use it from private chat!</string>
-    <string name="me_not_admin">Unfortunately, i\'m not admin in here :(</string>
-    <string name="admin_error">You do not have admin privileges!</string>
-    <string name="not_replied">Reply to user for me to {action}</string>
-    <string name="private_error">Don\'t use it on private chat!</string>
-    <string name="user_not_found_error">🛑 User not found error!</string>
-    <string name="restrict_admin_error">I am cannot {action} admin</string>
-    <string name="missing_perms">You\'re missing this permission:\n{perm}</string>
-    <string name="i_missing_perms">I\'m missing this permission:\n{perm}</string>
-    <string name="unhandled_error">⚠️ Unhandled error: {error}\n\nPlease report it to my owner!</string>
-    <string name="no_code">No code provided!</string>
+    <string name="about_me">Info bot\nID: {id}\nNama: {name}\nUsername: {uname}\n\nInfo pemilik\nID: {oid}\nNama: {oname}\nUsername: {ouname}</string>
+    <string name="one_banned">Berhasil nge ban {n} user: {users}</string>
+    <string name="two_banned">Berhasil nge ban {n} user: {users}</string>
+    <string name="more_banned">Berhasil nge ban {n} user: {users}</string>
+    <string name="one_unbanned">Berhasil melepas ban {n} user: {users}</string>
+    <string name="two_unbanned">Berhasil melepas ban {n} user: {users}</string>
+    <string name="more_unbanned">Berhasil melepas ban {n} user: {users}</string>
+    <string name="one_restrict_admin_error">Gagal membatasi {n} user: {users}</string>
+    <string name="two_restrict_admin_error">Gagal membatasi {n} user: {users}</string>
+    <string name="more_restrict_admin_error">Gagal membatasi {n} user: {users}</string>
+    <string name="reason">Alasan: {reason}</string>
+    <string name="report_bug_sent">Laporanmu udah kekirim dan akan di review sama developernya</string>
+    <string name="please_wait">Tunggu bentar...</string>
+    <!--     Error messages -->
+    <string name="not_replied">Balasan tidak terdeteksi. Mohon reply ke suatu user</string>
+    <string name="non_private_error">Mohon maaf, gunakan ini di obrolan pribadi!</string>
+    <string name="me_not_admin">Sayangnya, ku bukan admin disini :(</string>
+    <string name="admin_error">Kau ga punya hak akses admin!</string>
+    <string name="private_error">Jangan gunain ini di obrolan pribadi!</string>
+    <string name="one_user_not_found">🛑 Peringatan: Ku ga nemu user ini:\n{user}</string>
+    <string name="two_user_not_found">🛑 Peringatan: Ku ga nemu user ini:\n{user}</string>
+    <string name="more_user_not_found">🛑 Peringatan: Ku ga nemu user ini:\n{user}</string>
+    <string name="missing_perms">Kamu ga ada izin ini:\n{perm}</string>
+    <string name="i_missing_perms">Saya ga ada izin ini:\n{perm}</string>
+    <string name="unhandled_error">⚠️ Eror yang tidak terhandle: {error}\n\nMohon laporin ini ke pemilik ku atau dengan menggunakan perintah /report_bug!</string>
+    <string name="no_code">Kode belum diisi!</string>
+    <string name="report_bug_template_empty">Templat lapor bug:\n\n/report_bug Perintahnya apa?\nPesan errornya?\nApakah ada reply?\nApakah usernya admin?\nApakah botnya admin?\nIngfo tambahan:</string>
+    <string name="args_too_long">Argumen terlalu panjnag! Panjang argumen yang diterima cuma 4000 karakter!</string>
 </resources>

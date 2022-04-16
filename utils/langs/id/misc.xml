@@ -2,14 +2,14 @@
 <resources>
     <!-- Miscellaneous -->
     <!-- Normal -->
-    <string name="click_here">Click Here!</string>
-    <string name="back">Back</string>
-    <string name="home">Home</string>
-    <string name="about_me">About Me</string>
-    <string name="usage">Usage</string>
-    <string name="privacy_terms">Privacy &amp; Terms</string>
-    <string name="contact_us">Owner</string>
+    <string name="click_here">Klik sini!</string>
+    <string name="back">Balik</string>
+    <string name="home">Awal</string>
+    <string name="about_me">Tentangku</string>
+    <string name="usage">Penggunaan</string>
+    <string name="privacy_terms">Privasi &amp; Ketentuan</string>
+    <string name="contact_us">Pemilik</string>
     <!-- Errors -->
-    <string name="missing_perms">You\'re missing this permission:\n{perm}</string>
-    <string name="admin_error">Oof, you are not admin</string>
+    <string name="missing_perms">Kamu ga ada izin ini:\n{perm}</string>
+    <string name="admin_error">Ups, kau bukan atmin</string>
 </resources>

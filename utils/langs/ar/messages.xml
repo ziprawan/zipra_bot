@@ -1,26 +1,36 @@
 <?xml version="1.1" encoding="utf-8"?>
 <resources>
     <!-- Normal messages -->
-    <string name="start_message_private">Hi {name}, my name is {bot_name}!\n\nI\'m developed by @Pra210906. I hope I can manage your needs in group 😊\n\nFor help you can type /help</string>
+    <string name="start_message_private">Hi {name}, my name is {bot_name}!\n\nI\'m developed by @ridhwan_aziz. I hope I can manage your needs in group 😊\n\nFor help you can type /help</string>
     <string name="response_time">⌛️ Response time: </string>
-    <string name="help_message">Hello {name}!\n\nI\'m {bot_name} and i developed by @Pra210906.\nIf you found any bugs, just report to him :)\n\nPowered by Telethon {version}</string>
+    <string name="help_message">Hello {name}!\n\nI\'m {bot_name} and I developed by @ridhwan_aziz.\nIf you found any bugs, just report to him :)\n\nPowered by Telethon {version}</string>
     <string name="change_lang_success">Successfully changed the language to: {lang_name}</string>
-    <string name="change_lang_dialog"></string>
     <string name="about_me">Bot info\nID: {id}\nName: {name}\nUsername: {uname}\n\nOwner info\nID: {oid}\nName: {oname}\nUsername: {ouname}</string>
-    <string name="banned">{name} has been banned!</string>
+    <string name="one_banned">Successfully banned {n} user: {users}</string>
+    <string name="two_banned">Successfully banned {n} users: {users}</string>
+    <string name="more_banned">Successfully banned {n} users: {users}</string>
+    <string name="one_unbanned">Successfully unbanned {n} user: {users}</string>
+    <string name="two_unbanned">Successfully unbanned {n} users: {users}</string>
+    <string name="more_unbanned">Successfully unbanned {n} users: {users}</string>
+    <string name="one_restrict_admin_error">Failed to restrict {n} user: {users}</string>
+    <string name="two_restrict_admin_error">Failed to restrict {n} users: {users}</string>
+    <string name="more_restrict_admin_error">Failed to restrict {n} users: {users}</string>
     <string name="reason">Reason: {reason}</string>
-    <string name="unbanned">Ok, {name} can join again :)</string>
-    <string name="restrict_batch">{action} result:\n\nSucessful: {success} user(s)\nFailed: {failed} user(s)</string>
-    <!-- Error messages -->
+    <string name="report_bug_sent">Your report has been successfully submitted and will be reviewed by the developer</string>
+    <string name="please_wait">Please wait...</string>
+    <!--     Error messages -->
+    <string name="not_replied">Reply not detected. Please reply to user</string>
     <string name="non_private_error">Sorry, use it from private chat!</string>
-    <string name="me_not_admin">Unfortunately, i\'m not admin in here :(</string>
+    <string name="me_not_admin">Unfortunately, I\'m not admin in here :(</string>
     <string name="admin_error">You do not have admin privileges!</string>
-    <string name="not_replied">Reply to user for me to {action}</string>
     <string name="private_error">Don\'t use it on private chat!</string>
-    <string name="user_not_found_error">🛑 User not found error!</string>
-    <string name="restrict_admin_error">I am cannot {action} admin</string>
+    <string name="one_user_not_found">🛑 Warning: I\'m unable to find this user:\n{user}</string>
+    <string name="two_user_not_found">🛑 Warning: I\'m unable to find this users:\n{user}</string>
+    <string name="more_user_not_found">🛑 Warning: I\'m unable to find this users:\n{user}</string>
     <string name="missing_perms">You\'re missing this permission:\n{perm}</string>
     <string name="i_missing_perms">I\'m missing this permission:\n{perm}</string>
-    <string name="unhandled_error">⚠️ Unhandled error: {error}\n\nPlease report it to my owner!</string>
+    <string name="unhandled_error">⚠️ Unhandled error: {error}\n\nPlease report it to my owner or by using /report_bug command!</string>
     <string name="no_code">No code provided!</string>
+    <string name="report_bug_template_empty">Report bug template:\n\n/report_bug Which command?\nError message?\nIs replied?\nIs user is admin?\nIs bot is admin?\nAdditional info:</string>
+    <string name="args_too_long">Arguments too long! Allowed arguments is 4000 characters length!</string>
 </resources>

@@ -1,2 +1,2 @@
-from funcs import dbg, start, ping, help, lang, bans, other
-from funcs.other import my_eval
+from funcs import dbg, start, ping, help, lang, bans
+from funcs import other, for_fun

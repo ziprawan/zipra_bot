@@ -24,7 +24,7 @@ async def main(*args):
     owner_info = await event.client.get_entity(owner)
 
     logging.debug("[HelpCallback] Parsing arguments")
-    param = await parser.get_args()
+    param = parser.args
     entities = []
     logging.debug("[HelpCallback] Found arguments: %s" % param)
 
