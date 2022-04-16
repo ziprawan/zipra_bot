@@ -21,6 +21,9 @@ class Args:
             _rplc = _text.replace(_r, '')
             _text = _rplc.strip()
 
+        self.splitted = splitted
+        self.replaced = _text
+
         r = self.__class__(self.raw_text, splitted, _text)
 
         return r
