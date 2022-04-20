@@ -1,11 +1,11 @@
 # Zipra Bot
 Source code of @ridhwan_aziz's bot in telegram
 
-# Credits thanks
+# Credit thanks
 Go to this [page](./CREDITS.md)
 
 # Requirements
-- Have Python 3 (Version >= 3.7)
+- Has Python 3 (Version >= 3.7)
 - Python3 pip
 - Installed requirements (You can see at requirements.txt). You can install it by using command ```pip(3) install -Ur requirements.txt```
 
@@ -21,7 +21,7 @@ After filling required field, run it using ```python3 main.py```
 
 ### By reporting bug or requesting feature
 
-If you found any bugs or requesting feature, report it to [@ridhwan_aziz](https://t.me/ridhwan_aziz) or add to issues page
+If you found any bugs or requesting feature, report it to [@ridhwan_aziz](https://t.me/ridhwan_aziz) or add to issue page
 
 ### By contributing fixes
 
@@ -33,4 +33,4 @@ Interested with translating this project? Or my english is weird? Go to [crowdin
 
 # Donate
 
-Currently only [saweria](https://saweria.co/ridhwanaziz)
+Currently, only [saweria](https://saweria.co/ridhwanaziz)
