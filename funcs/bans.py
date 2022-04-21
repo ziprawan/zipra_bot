@@ -1,6 +1,6 @@
 import inspect
 from utils.database import Database
-from utils.helper import Default, check_perm, get_user, ol_generator, get_multi_lang_num
+from utils.helper import Default, check_perm, get_perm, ol_generator, get_multi_lang_num
 from utils.lang import Language
 from utils.parser import Parser
 
@@ -21,17 +21,16 @@ from telethon.tl.types import (
 
 async def bans(client: TelegramClient, chat: TypePeer, user: TypePeer | User | Channel, is_unban: bool | None = None):
     try:
-        await client.edit_permissions(
+        return await client.edit_permissions(
             entity=chat,
             user=user,
             view_messages=is_unban
         )
-        return True
     except errors.UserAdminInvalidError:
         return False
 
 
-async def ban(event: Message, cmd: str, lang: Language, user: list[User | Channel], reason: str):
+async def ban(event: Message, cmd: str, lang: Language, user: list[User | Channel], reason: str, silent: bool = False):
     _client = event.client
     _chat = await event.get_chat()
     _user = user
@@ -43,7 +42,13 @@ async def ban(event: Message, cmd: str, lang: Language, user: list[User | Channe
         if ban_result is False:
             _error.append(_u)
         else:
+            if silent:
+                if len(ban_result.updates) > 0:
+                    await _client.delete_messages(_chat, ban_result.updates[0].id)
             _success.append(_u)
+
+    if silent:
+        return None
 
     _msg_success = await get_multi_lang_num(lang, len(_success), 'banned' if cmd == 'ban' else 'unbanned')
     _msg_error = await get_multi_lang_num(lang, len(_error), 'restrict_admin_error')
@@ -109,6 +114,7 @@ async def main(*args):
     event: Message = args[0]
     client: TelegramClient = event.client
     lang = Language(event)
+    silent = False
     _user_error = []
 
     # Check private
@@ -118,20 +124,23 @@ async def main(*args):
     parser: Parser = args[1]
     param = parser.get_args()
     cmd: str = parser.get_command()
-    can_ban_user = await check_perm(event, 'ban_users')
-    i_can_ban = await check_perm(event, 'ban_users', user=InputPeerSelf())
+    user_perms = await get_perm(event)
+    bot_perms = await get_perm(event, user=InputPeerSelf())
+    can_ban_user = user_perms['ban_users']
+    i_can_ban = bot_perms['ban_users']
+    i_can_delete = bot_perms['delete_messages']
 
     # Check permissions
-    if not i_can_ban or not can_ban_user:
+    if not i_can_ban or not can_ban_user or not i_can_delete:
         if not i_can_ban:
             msg = await lang.get('i_missing_perms')
         elif not can_ban_user:
             msg = await lang.get('missing_perms')
         else:
             msg = ""
-        offs, lens = ol_generator(msg, ['perm'], ['ban_users'])
+        offs, lens = ol_generator(msg, ['perm'], ["delete_messages" if not i_can_delete else 'ban_users'])
         return await event.reply(
-            msg.format_map(Default(perm="ban_users")),
+            msg.format_map(Default(perm="delete_messages" if not i_can_delete else 'ban_users')),
             formatting_entities=[MessageEntityCode(
                 offset=offs[0],
                 length=lens[0]
@@ -141,7 +150,7 @@ async def main(*args):
     # Getting user
     replied: Message = await event.get_reply_message()
     if replied:
-        users = await replied.get_sender()
+        users = [await replied.get_sender()]
         reason = param if param is None else param.raw_text
     else:
         if param.raw_text is None:
@@ -157,9 +166,21 @@ async def main(*args):
                     if u not in _user_error:
                         _user_error.append(str(u))
             reason = param.replaced
+    if cmd[0] == 'd':
+        cmd = cmd[1:]
+        if replied:
+            await replied.delete()
+    elif cmd[0] == 's':
+        cmd = cmd[1:]
+        silent = True
+        if replied:
+            await replied.delete()
+        await event.delete()
+    elif cmd[0] == 'n':
+        pass
 
     if cmd == "ban" or cmd == "unban":
-        await ban(event, cmd, lang, users, reason)
+        await ban(event, cmd, lang, users, reason, silent)
     elif cmd == "nban":
         await nban(event, lang, users, reason)
     # elif cmd == "kick":

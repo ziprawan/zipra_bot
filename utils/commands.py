@@ -8,6 +8,7 @@ commands = {
     'help': help, 'setlang': lang, 'eval': other.my_eval, 'ban': bans,
     'unban': bans, 'scope': other.scope, 'debugmode': other.debugmode,
     'report_bug': other.report_bug, 'figlet': for_fun.figlet, 'getpp': for_fun.get_pp,
+    'dban': bans, 'sban': bans
 }
 
 callbacks = {

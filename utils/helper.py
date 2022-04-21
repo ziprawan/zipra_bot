@@ -45,14 +45,14 @@ async def check_perm(event: Message, perm: str, chat: types.TypeChat | None = No
         raise KeyError("Permission not found")
 
 
-async def get_perm(event: Message, chat: types.TypeChat | None = None, user: types.TypePeer | None = None):
+async def get_perm(event: Message, chat: types.TypeInputChannel | None = None, user: types.TypeInputPeer | None = None):
     # RAISE ERROR IF CHAT TYPE IS PRIVATE
     if event.is_private:
         raise TypeError("There is no permission in private chat")
 
     # Declare some needed variables
-    chat = chat if chat else (await event.get_chat())
-    user = user if user else (await event.get_sender())
+    chat = chat if chat else (await event.get_input_chat())
+    user = user if user else (await event.get_input_sender())
     # permissions list. All default None. Will be declared after parsing participant info
     permissions = {
         'add_admins': None,

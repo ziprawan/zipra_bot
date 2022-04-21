@@ -15,6 +15,7 @@ from telethon.tl.types import (
     MessageService
 )
 
+
 async def chat_action(event: events.ChatAction.Event):
     """
     Chat Action handler
@@ -46,7 +47,7 @@ async def chat_action(event: events.ChatAction.Event):
         full_name = first_name + f" {last_name}" if last_name else first_name
         user_id = user.id
         access_hash = user.access_hash
-    
+
     print(first_name)
     print(last_name)
     print(user_id)

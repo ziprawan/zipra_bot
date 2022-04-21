@@ -14,6 +14,7 @@ from telethon.tl.types import (
 )
 from utils.lang import Language
 
+
 async def main(*args):
     logging.debug("[HelpCallback] Setting up variables")
     event: CallbackQuery.Event = args[0]
